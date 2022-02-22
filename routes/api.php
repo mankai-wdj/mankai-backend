@@ -39,4 +39,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('user/follow' ,[FollowsController::class,'store'])->name('storeFollow');
+Route::post('user/follow' ,[FollowsController::class,'store'])->name('storeFollow'); //follow 저장
+
+Route::get('messages/{id}' ,[ChatController::class,'getMessages'])->name('messages'); // room messages 가져오기
+
+Route::get('rooms/{id}' ,[ChatController::class,'getRooms'])->name('rooms'); // rooms 가져오기
+
+Route::post('room/create' ,[ChatController::class,'createRoom'])->name('createRoom'); // room create
+
+Route::post('message/send' ,[ChatController::class,'sendMessage'])->name('sendMessage');  //message post
+
+Route::post('room/check' ,[ChatController::class,'deleteRoom'])->name('deleteRoom'); // room 있는지 없는지 확인
