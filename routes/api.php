@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\NotisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,11 +37,11 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('admin/getuser', [AuthController::class,'getUsers']);
 });
 
+Route::post('user/follow' ,[FollowController::class,'store'])->name('storeFollow'); //follow 저장
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::post('user/follow' ,[FollowsController::class,'store'])->name('storeFollow'); //follow 저장
 
 Route::get('messages/{id}' ,[ChatController::class,'getMessages'])->name('messages'); // room messages 가져오기
 

@@ -90,8 +90,8 @@ class ChatController extends Controller
                 'file' => $file_path,
             ]);
 
-            broadcast(new MessageSent($message->load('user')))->toOthers();
-
+            // broadcast(new MessageSent($message->load('user')))->toOthers();
+            // event(new MessageSent($message->load('user')));
         }
         return $message;
 
