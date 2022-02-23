@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BoardController;
 use App\Http\Controllers\NotisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,3 +41,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('user/follow' ,[FollowsController::class,'store'])->name('storeFollow');
+Route::post('/board/show/{category}',[BoardController::class,"BoardShow"]);
+Route::post('/show/comment/{board_id}',[BoardController::class,"ShowComment"]);
+Route::post('/post/comment',[BoardController::class,"PostComment"]);
+Route::post('/show/papago',[BoardController::class,"ShowPapago"]);
+Route::post('/show/username/{user_id}',[BoardController::class,"ShowUserName"]);
+Route::post('/update/comment',[BoardController::class,"UpdateComment"]);
+Route::post('/delete/comment/{comment_id}',[BoardController::class,"DeleteComment"]);
+Route::post('/post/like',[BoardController::class,"PostLike"]);
+Route::post('/show/like',[BoardController::class,"ShowLike"]);
