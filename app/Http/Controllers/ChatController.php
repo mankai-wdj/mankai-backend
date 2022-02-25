@@ -17,11 +17,12 @@ class ChatController extends Controller
 {
     public function getMessages($id) {
 
-        $messages = Room::find($id)->messages()->with('user')->get();
+        $messages = Room::find($id)->messages()->with('user')->latest()->paginate(20);
         return $messages;
     }
 
     public function sendMessage(Request $request) {
+        // return $request;
         $file_path = null;
         $images = [];
         $user = User::find($request->user_id);
