@@ -52,3 +52,5 @@ Route::post('room/create' ,[ChatController::class,'createRoom'])->name('createRo
 Route::post('message/send' ,[ChatController::class,'sendMessage'])->name('sendMessage');  //message post
 
 Route::post('room/check' ,[ChatController::class,'deleteRoom'])->name('deleteRoom'); // room 있는지 없는지 확인
+
+Route::post('user/invite' ,[ChatController::class,'inviteUser'])->name('userInvite'); // user 초대
