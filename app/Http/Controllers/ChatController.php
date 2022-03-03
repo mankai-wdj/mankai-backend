@@ -131,36 +131,59 @@ class ChatController extends Controller
         return $chatroom;
     }
 
-    public function inviteUser(Request $request) {  //나중에 구현
-        // return count(json_decode($request->users));
-        $room = Room::find($request->room_id);
-        // return $room;
-        // $users = $request->users;
-        if($room->type == 'dm') {
-            $type = 'group';
-            $room = $this->createRoom2($request, $type);
-        }else {
-            $users = [];
-            $users = json_decode($room->users);
-            return $users;
-            for($i = 0; $i< count($request->users); $i++) {
-                array_push($users, (object)array('user_id'=>$request->users[$i]['id'], 'user_name'=>$request->users[$i]['name']));
+    public function inviteUser(Request $request) {
+        // return $request;
+        $room = Room::find($request->room['id']);
+        // return $room['type'];
+        $users = $request->inviteUsers;
+        // return gettype($users[0]['id']);
+        // return gettype($request->user);
+        $users1 = [];
+        if($room['type'] == 'dm') {
+            // array_push($users, (object)($request->user));   //  그룹 유저들부터 users에 넣어줘야되는데 따로 돌려서
+            $users1 = [...$users1, ...json_decode($room->users)];
+
+            $room = new Room();
+            for($i = 0; $i < count($users); $i++){
+                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name']));  //여기 에러
             }
-            $room->users = json_encode($users);
+            $room->users = json_encode($users1);
+            $room->type = "group";
             $room->save();
-            for($i=0; $i < count($request->users); $i++) {
+            // return $users1[0]->user_id;
+            for($i=0; $i < count($users1); $i++) {
                 // $rooms = [];
-                $user = User::find($request->users[$i]['id']);
+                $user = User::find($users1[$i]->user_id);
+                $user->myRooms()->attach($room->id);
+            }
+        }else {
+            // return $room;
+            $users1 = json_decode($room->users);
+            for($i = 0; $i < count($users); $i++){
+                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name']));
+            }
+            $room->users = json_encode($users1);
+            $room->save();
+            $users1 = [...$users];
+            // return $users1[0]['id'];
+            // return $users1;
+            // for($i = 0; $i < count($users); $i++){
+            //     array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name']));
+            // }
+            for($i=0; $i < count($users1); $i++) {
+                // $rooms = [];
+
+                $user = User::find($users1[$i]['id']);
                 $user->myRooms()->attach($room->id);
             }
         }
         return $room;
-
     }
 
     public function createRoom(Request $request) {  //users에 user 객체 넣기
         // return $request->users;
         $users =  $request->users;
+        // return $users;
         // return gettype($users[0]['id']);
         $type = '';
         if (count($users) === 2) {
@@ -185,42 +208,7 @@ class ChatController extends Controller
         }else {
             $type = 'group';
         }
-        $room = $this->createRoom2($request, $type);
-        // $users1 = [];
-        // $room = new Room();
-        // if($request->title) {
-        //     $room->title = $request->title;
-        // }elseif($request->password) {
-        //     $room->password = $request->password;
-        // }
 
-        // for($i = 0; $i < count($users); $i++){
-        //     array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name']));
-        // }
-        // $room->users = json_encode($users1);
-        // $room->type = $type;
-        // $room->save();
-
-
-        // for($i=0; $i < count($users); $i++) {
-        //     // $rooms = [];
-        //     $user = User::find($users[$i]['id']);
-        //     // if($user->rooms){
-        //     //     $rooms = json_decode($user->rooms);
-        //     // }
-        //     // array_push($rooms,$room->id);
-        //     // $user->rooms = json_encode($rooms);
-        //     // $user->save();
-        //     // return $user->rooms();
-        //     $user->myRooms()->attach($room->id);
-        // }
-
-
-        return $room;
-    }
-
-    public function createRoom2($request, $type) {
-        // return $request.'--'.$type;
         $users1 = [];
         $room = new Room();
         if($request->title) {
@@ -229,17 +217,17 @@ class ChatController extends Controller
             $room->password = $request->password;
         }
 
-        for($i = 0; $i < count($request->users); $i++){
-            array_push($users1, (object)array('user_id'=>$request->users[$i]['id'], 'user_name'=>$request->users[$i]['name']));
+        for($i = 0; $i < count($users); $i++){
+            array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name']));
         }
         $room->users = json_encode($users1);
         $room->type = $type;
         $room->save();
 
 
-        for($i=0; $i < count($request->users); $i++) {
+        for($i=0; $i < count($users); $i++) {
             // $rooms = [];
-            $user = User::find($request->users[$i]['id']);
+            $user = User::find($users[$i]['id']);
             // if($user->rooms){
             //     $rooms = json_decode($user->rooms);
             // }
@@ -249,6 +237,8 @@ class ChatController extends Controller
             // return $user->rooms();
             $user->myRooms()->attach($room->id);
         }
+
+
         return $room;
     }
 }
