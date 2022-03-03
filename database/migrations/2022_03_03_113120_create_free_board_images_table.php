@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFreeBoardLikesTable extends Migration
+class CreateFreeBoardImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateFreeBoardLikesTable extends Migration
      */
     public function up()
     {
-        Schema::create('free_board_likes', function (Blueprint $table) {
+        Schema::create('free_board_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("free_boards_id");
-            $table->foreignId("user_id");
+            $table->string('url');
             $table->timestamps();
+            $table->foreignId('free_boards_id')
+                ->constrained('free_boards')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 
@@ -28,6 +31,6 @@ class CreateFreeBoardLikesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('free_board_likes');
+        Schema::dropIfExists('free_board_images');
     }
 }

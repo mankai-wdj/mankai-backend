@@ -16,6 +16,27 @@ class BoardController extends Controller
 
         return "wda";
     }
+
+
+
+    public function Store(Request $request)
+    {
+        $request->validate([
+            'selectedImages' => 'required_without:textfieldvalue',
+            'textfieldvalue' => 'required_without:selectedImages'
+        ]);
+
+        $free_board = new Freeboard();
+        $free_board->user_id = $request->user["id"];
+        if ($request->textfieldvalue != null) {
+            $free_board->content_text = $request->textfieldvalue;
+        }
+        $free_board->category = $request->muiSelectValue;
+        $free_board->save();
+
+        return $free_board;
+    }
+
     public function BoardShow($category)
     {
         if ($category == "전체") {
@@ -63,7 +84,6 @@ class BoardController extends Controller
         $like->user_id = $request->user_id;
         $like->freeboard_id = $request->board_id;
         $like->save();
-
         return $request;
     }
     public function PostComment(Request $request)
@@ -84,6 +104,17 @@ class BoardController extends Controller
     {
         $comment = Comment::find($comment_id);
         $comment->delete();
+    }
+    public function DeleteLike(Request $request)
+    {
+        $like = DB::table('free_board_likes')
+            ->where([
+                ["freeboard_id", "=", $request->board_id],
+                ["user_id", "=", $request->user_id]
+            ])
+            ->delete();
+
+        // return $like;
     }
 
     public function ShowPapago(Request $request)
