@@ -104,6 +104,16 @@ class BoardController extends Controller
         $comment = Comment::find($comment_id);
         $comment->delete();
     }
+    public function DeleteLike(Request $request){
+        $like = DB::table('free_board_likes')
+            ->where([
+                ["freeboard_id","=",$request->board_id],
+                ["user_id","=",$request->user_id]
+                ])
+            ->delete();
+
+        // return $like;
+    }
 
     public function ShowPapago(Request $request)
     {
