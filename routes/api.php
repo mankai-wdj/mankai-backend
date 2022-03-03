@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\NotisController;
+use App\Http\Controllers\TranslationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -54,3 +55,5 @@ Route::post('message/send' ,[ChatController::class,'sendMessage'])->name('sendMe
 Route::post('room/check' ,[ChatController::class,'deleteRoom'])->name('deleteRoom'); // room 있는지 없는지 확인
 
 Route::post('user/invite' ,[ChatController::class,'inviteUser'])->name('userInvite'); // user 초대
+
+Route::post('/translate/text', [TranslationController::class, 'translation']);  // translation

@@ -131,7 +131,7 @@ class ChatController extends Controller
         return $chatroom;
     }
 
-    public function inviteUser(Request $request) {
+    public function inviteUser(Request $request) {  //나중에 구현
         // return count(json_decode($request->users));
         $room = Room::find($request->room_id);
         // return $room;
@@ -141,6 +141,8 @@ class ChatController extends Controller
             $room = $this->createRoom2($request, $type);
         }else {
             $users = [];
+            $users = json_decode($room->users);
+            return $users;
             for($i = 0; $i< count($request->users); $i++) {
                 array_push($users, (object)array('user_id'=>$request->users[$i]['id'], 'user_name'=>$request->users[$i]['name']));
             }
