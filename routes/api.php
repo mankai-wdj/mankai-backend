@@ -50,3 +50,4 @@ Route::post('/update/comment',[BoardController::class,"UpdateComment"]);
 Route::post('/delete/comment/{comment_id}',[BoardController::class,"DeleteComment"]);
 Route::post('/post/like',[BoardController::class,"PostLike"]);
 Route::post('/show/like',[BoardController::class,"ShowLike"]);
+Route::post('/delete/like',[BoardController::class,"DeleteLike"]);
