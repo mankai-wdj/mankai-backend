@@ -63,7 +63,6 @@ class BoardController extends Controller
         $like -> user_id = $request->user_id;
         $like -> freeboard_id = $request -> board_id;
         $like -> save();
-
         return $request;
     }
     public function PostComment(Request $request){
