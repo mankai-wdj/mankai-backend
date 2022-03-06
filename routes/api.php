@@ -50,7 +50,9 @@ Route::get('rooms/{id}' ,[ChatController::class,'getRooms'])->name('rooms'); // 
 
 Route::post('room/create' ,[ChatController::class,'createRoom'])->name('createRoom'); // room create
 
-Route::post('message/send' ,[ChatController::class,'sendMessage'])->name('sendMessage');  //message post
+Route::post('message/send' ,[ChatController::class,'messageSend'])->name('sendMessage');  //message post
+
+Route::post('messageBot/send' ,[ChatController::class,'sendMessageBot'])->name('sendMessageBot');  //message post
 
 Route::post('room/check' ,[ChatController::class,'deleteRoom'])->name('deleteRoom'); // room 있는지 없는지 확인
 

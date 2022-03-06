@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Laravel\Ui\Presets\React;
 use SebastianBergmann\Environment\Console;
 use Throwable;
@@ -23,8 +24,66 @@ class ChatController extends Controller
         return $messages;
     }
 
-    public function sendMessage(Request $request) {
-        // return $request;
+    public function sendMessageBot(Request $request) {
+
+        $trans = new TranslationController;
+        $lang = $trans->searchLanguage($request->message);
+        $tran = '';
+        if($request->user_id == 5) { // user_id 5 는 일본어 통역봇
+            if($lang == 'ko') {
+                $tran = 'ja';
+            }else if ($lang == 'ja'){
+                $tran = 'ko';
+            }else {
+                return ;
+            }
+        }else if($request->user_id == 6) {
+            if($lang == 'ko') {
+                $tran = 'en';
+            }else if($lang == 'en'){
+                $tran = 'ko';
+            }else {
+                return ;
+            }
+        }
+        // return $lang.'   '.$tran;
+        $client_id = env("NA_CLIENT_ID"); // 네이버 개발자센터에서 발급받은 CLIENT ID
+        $client_secret = env("NA_CLIENT_SECRET");// 네이버 개발자센터에서 발급받은 CLIENT SECRET
+        $encText = urlencode($request->message);
+        $postvars = "source=".$lang."&target=".$tran."&text=".$encText;
+        $url = "https://openapi.naver.com/v1/papago/n2mt";
+        $is_post = true;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, $is_post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);
+        $headers = array();
+        $headers[] = "X-Naver-Client-Id: ".$client_id;
+        $headers[] = "X-Naver-Client-Secret: ".$client_secret;
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec ($ch);
+        $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        // echo "status_code:".$status_code."<br>";
+        curl_close ($ch);
+        if($status_code == 200) {
+        //   echo $response;
+            $data = json_decode($response);
+            $request->message = $data->message->result->translatedText;
+        } else {
+        //   echo "Error 내용:".$response;
+            // return $request->text;
+        }
+        return $this->sendMessage($request);
+    }
+
+    public function messageSend(Request $request) {
+        return $this->sendMessage($request);
+    }
+
+    public function sendMessage($request) {
+        // return $request->message;
+        // return gettype($request);
         $file_path = null;
         $images = [];
         $user = User::find($request->user_id);
@@ -160,7 +219,7 @@ class ChatController extends Controller
             // return $room;
             $users1 = json_decode($room->users);
             for($i = 0; $i < count($users); $i++){
-                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name']));
+                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name'], 'position' => $users[$i]['position']));
             }
             $room->users = json_encode($users1);
             $room->save();
@@ -218,7 +277,7 @@ class ChatController extends Controller
         }
 
         for($i = 0; $i < count($users); $i++){
-            array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name']));
+            array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name'], 'position' => $users[$i]['position']));
         }
         $room->users = json_encode($users1);
         $room->type = $type;
