@@ -40,3 +40,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('user/follow' ,[FollowsController::class,'store'])->name('storeFollow');
+
+Route::post('/test', [MymemoController::class,'test']);
+Route::post('/mymemoshow', [MymemoController::class,'MymemoShow']);
+Route::post('/postmemoshow',[MymemoController::class,'PostmemoShow']);
