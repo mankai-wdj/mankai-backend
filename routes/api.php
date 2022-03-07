@@ -56,3 +56,4 @@ Route::post('upload_post', [BoardController::class, "Store"]);
 Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
+Route::get('myposts/{user_id}', [BoardController::class, "ShowMyPosts"]);

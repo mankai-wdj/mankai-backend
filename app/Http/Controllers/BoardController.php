@@ -8,6 +8,7 @@ use App\Models\FreeBoardLike;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BoardController extends Controller
 {
@@ -17,6 +18,29 @@ class BoardController extends Controller
         return "wda";
     }
 
+    public function ShowMyPosts($user_id)
+    {
+
+        $boards = DB::table("free_boards")
+            ->where("free_boards.user_id", $user_id)
+            ->get();
+
+        foreach ($boards as $board) {
+            $images = DB::table('free_board_images')
+                ->where('free_board_images.free_boards_id', $board->id)
+                ->get();
+
+            $comments = DB::table('comments')
+                ->where('comments.freeboard_id', $board->id)
+                ->get();
+
+            $board->images = $images;
+            $board->comments = $comments;
+        }
+
+
+        return $boards;
+    }
 
 
     public function Store(Request $request)
