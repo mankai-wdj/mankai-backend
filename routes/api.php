@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BoardController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\NotisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,27 +18,52 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('register' ,[AuthController::class,'register']);
+Route::post('register', [AuthController::class, 'register']);
 
-Route::post('login' ,[AuthController::class,'login'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login');
 
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/checklogin', function() {
-        return response()->json(["message"=>'logged in','status'=>200],200);
+    Route::get('/checklogin', function () {
+        return response()->json(["message" => 'logged in', 'status' => 200], 200);
     });
 
-    Route::post('logout', [AuthController::class,'logout']);
+    Route::post('logout', [AuthController::class, 'logout']);
 
-    Route::post('noti/add', [NotisController::class,'addNoti']);
+    Route::post('noti/add', [NotisController::class, 'addNoti']);
 
-    Route::get('noti/get', [NotisController::class,'NotiIndex']);
+    Route::get('noti/get', [NotisController::class, 'NotiIndex']);
 
-    Route::get('admin/getuser', [AuthController::class,'getUsers']);
+    Route::get('admin/getuser', [AuthController::class, 'getUsers']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('user/follow' ,[FollowsController::class,'store'])->name('storeFollow');
+
+Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
+Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
+Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
+Route::post('/post/comment', [BoardController::class, "PostComment"]);
+Route::post('/show/papago', [BoardController::class, "ShowPapago"]);
+Route::post('/show/username/{user_id}', [BoardController::class, "ShowUserName"]);
+Route::post('/update/comment', [BoardController::class, "UpdateComment"]);
+Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComment"]);
+Route::post('/post/like', [BoardController::class, "PostLike"]);
+Route::post('/show/like', [BoardController::class, "ShowLike"]);
+Route::post('upload_post', [BoardController::class, "Store"]);
+Route::post('upload_image', [ImageController::class, 'Store']);
+Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
+Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
+
+// Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
+// Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
+// Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
+// Route::post('/post/comment', [BoardController::class, "PostComment"]);
+// Route::post('/show/papago', [BoardController::class, "ShowPapago"]);
+// Route::post('/show/username/{user_id}', [BoardController::class, "ShowUserName"]);
+// Route::post('/update/comment', [BoardController::class, "UpdateComment"]);
+// Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComment"]);
+// Route::post('/post/like', [BoardController::class, "PostLike"]);
+// Route::post('/show/like', [BoardController::class, "ShowLike"]);
