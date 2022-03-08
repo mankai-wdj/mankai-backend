@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
+use App\Events\Users;
+use App\Events\UsersCommunication;
 use App\Models\Message;
 use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Ui\Presets\React;
@@ -19,7 +22,7 @@ use function PHPUnit\Framework\isNull;
 class ChatController extends Controller
 {
     public function getMessages($id) {
-
+        // dd(Auth::user());
         $messages = Room::find($id)->messages()->with('user')->latest()->paginate(20);
         return $messages;
     }
@@ -37,7 +40,7 @@ class ChatController extends Controller
             }else {
                 return ;
             }
-        }else if($request->user_id == 6) {
+        }else if($request->user_id == 6) { // user_id 6 은 영어 통역봇
             if($lang == 'ko') {
                 $tran = 'en';
             }else if($lang == 'en'){
@@ -82,12 +85,14 @@ class ChatController extends Controller
     }
 
     public function sendMessage($request) {
-        // return $request->message;
-        // return gettype($request);
+        // return $request->toUser;
+        // return ($request->to_users[0]);
+        // return is_array($request->file('file'));
         $file_path = null;
         $images = [];
         $user = User::find($request->user_id);
         // dd($request->file());
+        $room = Room::find($request->room_id);
         if ($request->hasFile('file')) {
             // array_push($files, $request->file('file'));
             // dd(is_array($request->file('file')));
@@ -110,7 +115,11 @@ class ChatController extends Controller
                             'file' => $file_path,
                         ]);
 
-                        broadcast(new MessageSent($message->load('user')))->toOthers();
+                        for($i = 0; $i < count($request->to_users); $i++){
+                            broadcast(new MessageSent($message->load('user'), $request->to_users[$i]))->toOthers();
+                        }
+                        // return $message;
+                        // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
                     }
                 }
 
@@ -120,7 +129,10 @@ class ChatController extends Controller
                     'file' => json_encode($images),
                 ]);
 
-                broadcast(new MessageSent($message->load('user')))->toOthers();
+                for($i = 0; $i < count($request->to_users); $i++){
+                    broadcast(new MessageSent($message->load('user'), $request->to_users[$i]))->toOthers();
+                }
+                // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
             }else {
                 $fileType = explode("/",$request->file('file')->getClientMimeType());
                 if($fileType[0] == 'image') {
@@ -138,8 +150,11 @@ class ChatController extends Controller
                     'room_id' => $request->room_id,
                     'file' => $file_path,
                 ]);
+                for($i = 0; $i < count($request->to_users); $i++){
+                    broadcast(new MessageSent($message->load('user'), $request->to_users[$i]))->toOthers();
+                }
 
-                broadcast(new MessageSent($message->load('user')))->toOthers();
+                // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
             }
 
         }else{
@@ -152,9 +167,18 @@ class ChatController extends Controller
                 'file' => $file_path,
             ]);
 
-            broadcast(new MessageSent($message->load('user')))->toOthers();
             // event(new MessageSent($message->load('user')));
+            for($i = 0; $i < count($request->to_users); $i++){
+                broadcast(new MessageSent($message->load('user'), $request->to_users[$i]))->toOthers();
+            }
+
+            // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
+
         }
+
+
+        $room->last_message = $request->message;
+        $room->save();
         return $message;
 
     }
@@ -175,7 +199,6 @@ class ChatController extends Controller
                 }
             };
             $room->users = json_encode($updateUsers);
-            $room->save();
         }
         return $room;
     }
