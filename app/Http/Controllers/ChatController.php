@@ -107,7 +107,10 @@ class ChatController extends Controller
                     }else {
                         $fileName = time() . '_' . $request->file('file')[$i]->getClientOriginalName();
                         $request->file('file')[$i]->storeAs('/public/files/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
-                        $file_path ='files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
+                        // $file_path ='files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
+                        $file_path = [];
+                        array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'name' =>explode(".", $request->file('file')->getClientOriginalName())[0] , 'type'=>explode(".",$request->file('file')->getClientOriginalName())[1]));
+                        $file_path = json_encode($file_path);
 
                         $message = $user->messages()->create([
                             'message' => $request->message,
@@ -141,9 +144,14 @@ class ChatController extends Controller
                     $request->file('file')->storeAs('/public/images/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
                     $file_path ='images/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
                 }else {
+                    // return explode(".",$request->file('file')->getClientOriginalName());
                     $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
                     $request->file('file')->storeAs('/public/files/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
-                    $file_path ='files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
+                    $file_path = [];
+                    array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'name' =>explode(".", $request->file('file')->getClientOriginalName())[0] , 'type'=>explode(".",$request->file('file')->getClientOriginalName())[1]));
+                    $file_path = json_encode($file_path);
+                    // $file_path ='files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
+
                 }
                 $message = $user->messages()->create([
                     'message' => $request->message,
