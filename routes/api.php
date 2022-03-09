@@ -56,4 +56,11 @@ Route::post('upload_post', [BoardController::class, "Store"]);
 Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
-Route::get('myposts/{user_id}', [BoardController::class, "ShowMyPosts"]);
+
+Route::get('myposts/{user_id}', [BoardController::class, "showMyPosts"]);
+Route::post('myposts/{post_id}', [Boardcontroller::class, 'editMyPosts']);
+
+Route::post('postmemo/{post_id}/{user_id}', [BoardController::class, "storePostMemo"]);
+Route::get('showmypostmemos/{user_id}', [BoardController::class, 'showPostMemos']);
+Route::post('editmypostmemos/{post_id}', [BoardController::class, 'editPostMemos']);
+Route::post('deletemypostmemos/{post_id}', [BoardController::class, 'deletePostMemos']);
