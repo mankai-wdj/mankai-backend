@@ -41,9 +41,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/test', [MymemoController::class, 'test']);
-Route::post('/mymemoshow', [MymemoController::class, 'MymemoShow']);
-Route::post('/postmemoshow', [MymemoController::class, 'PostmemoShow']);
 
 
 Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
@@ -63,6 +60,10 @@ Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 
 Route::get('myposts/{user_id}', [BoardController::class, "showMyPosts"]);
 Route::post('myposts/{post_id}', [Boardcontroller::class, 'editMyPosts']);
+
+Route::post('/test', [MymemoController::class, 'test']);
+Route::post('/mymemoshow', [MymemoController::class, 'MymemoShow']);
+Route::post('/postmemoshow', [MymemoController::class, 'PostmemoShow']);
 
 Route::post('postmemo/{post_id}/{user_id}', [BoardController::class, "storePostMemo"]);
 Route::get('showmypostmemos/{user_id}', [BoardController::class, 'showPostMemos']);
