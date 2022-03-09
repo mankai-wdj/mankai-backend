@@ -75,6 +75,20 @@ class BoardController extends Controller
             ->paginate(5);
         return $comments;
     }
+    public function ShowSampleComment($board_id){
+        $comments = DB::table('comments')->where("freeboard_id","=",$board_id)->limit(3)->get();
+        $len = count($comments);
+        $clen = DB::table('comments')->where("freeboard_id","=",$board_id)->count();
+
+        for($i=0; $i<$len;$i++){
+            $count = DB::table('users')->where("id",'=',$comments[$i] -> user_id)->value("name");
+            $comments[$i]-> user_name = $count;
+            $comments[$i] -> length = $clen;
+        }
+
+        return $comments;
+
+    }
 
     public function PostLike(Request $request)
     {

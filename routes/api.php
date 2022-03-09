@@ -55,6 +55,7 @@ Route::post('/show/like', [BoardController::class, "ShowLike"]);
 Route::post('upload_post', [BoardController::class, "Store"]);
 Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
+Route::get('/show/samplecomment/{board_id}',[BoardController::class,'ShowSampleComment']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 
 // Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
