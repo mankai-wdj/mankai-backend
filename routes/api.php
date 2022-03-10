@@ -51,13 +51,15 @@ Route::post('/show/username/{user_id}', [BoardController::class, "ShowUserName"]
 Route::post('/update/comment', [BoardController::class, "UpdateComment"]);
 Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComment"]);
 Route::post('/post/like', [BoardController::class, "PostLike"]);
-Route::post('/show/like', [BoardController::class, "ShowLike"]);
+Route::get('/show/like/{board_id}', [BoardController::class, "ShowLike"]);
 Route::post('upload_post', [BoardController::class, "Store"]);
 Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
 Route::get('/show/samplecomment/{board_id}',[BoardController::class,'ShowSampleComment']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 
+
+// Route::get('/show/like', [BoardController::class, "ShowLike"]);
 // Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
 // Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
 // Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
@@ -67,4 +69,3 @@ Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 // Route::post('/update/comment', [BoardController::class, "UpdateComment"]);
 // Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComment"]);
 // Route::post('/post/like', [BoardController::class, "PostLike"]);
-// Route::post('/show/like', [BoardController::class, "ShowLike"]);

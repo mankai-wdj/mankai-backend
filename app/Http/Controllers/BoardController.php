@@ -53,17 +53,12 @@ class BoardController extends Controller
         }
         return $boards;
     }
-    public function ShowLike(Request $request)
+    public function ShowLike($board_id)
     {
-        $array = $request->data;
-        $boardArray = [];
-
-        foreach ($array as $data) {
             $board = DB::table("free_board_likes")
-                ->where("freeboard_id", "=", $data)->get();
-            array_push($boardArray, $board);
-        }
-        return $boardArray;
+                ->where("freeboard_id", "=", $board_id)->get();
+
+        return $board;
     }
     public function ShowComment($board_id)
     {
@@ -96,7 +91,11 @@ class BoardController extends Controller
         $like->user_id = $request->user_id;
         $like->freeboard_id = $request->board_id;
         $like->save();
-        return $request;
+
+        $likes = DB::table('free_board_likes')
+            ->where([["user_id","=",$request->user_id],["freeboard_id","=",$request->board_id]])->get();
+
+        return $likes;
     }
     public function PostComment(Request $request)
     {
@@ -125,7 +124,11 @@ class BoardController extends Controller
                 ])
             ->delete();
 
-        // return $like;
+        $likes = DB::table('free_board_likes')
+            ->where([["user_id","=",$request->user_id],["freeboard_id","=",$request->board_id]])->get();
+
+
+        return $likes;
     }
 
     public function ShowPapago(Request $request)
