@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\MemoController;
 use App\Http\Controllers\NotisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -56,7 +57,10 @@ Route::post('upload_post', [BoardController::class, "Store"]);
 Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
-
+Route::post('/post/memo',[MemoController::class,"PostMemo"]);
+Route::get('/show/memo/{user_id}', [MemoController::class, 'ShowMemo']);
+Route::get('/get/board/{user_id}',[MemoController::class,'GetMyBoard']);
+Route::get('/show/memos/{memo_id}', [MemoController::class, 'editMemoView']);
 // Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
 // Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
 // Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
