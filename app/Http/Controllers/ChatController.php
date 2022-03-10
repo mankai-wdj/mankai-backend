@@ -104,12 +104,15 @@ class ChatController extends Controller
                         $request->file('file')[$i]->storeAs('/public/images/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
                         $file_path ='images/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
                         array_push($images, $file_path);
+                        // return $request->file('file')[$i];
                     }else {
                         $fileName = time() . '_' . $request->file('file')[$i]->getClientOriginalName();
                         $request->file('file')[$i]->storeAs('/public/files/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
                         // $file_path ='files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
                         $file_path = [];
-                        array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'name' =>explode(".", $request->file('file')->getClientOriginalName())[0] , 'type'=>explode(".",$request->file('file')->getClientOriginalName())[1]));
+                        // return $request->file('file')[$i]->getSize();
+
+                        array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'size' =>$request->file('file')[$i]->getSize() , 'name' =>$request->file('file')->getClientOriginalName() , 'type'=>explode(".",$request->file('file')->getClientOriginalName())[count(explode(".",$request->file('file')->getClientOriginalName()))-1]));
                         $file_path = json_encode($file_path);
 
                         $message = $user->messages()->create([
@@ -148,7 +151,8 @@ class ChatController extends Controller
                     $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
                     $request->file('file')->storeAs('/public/files/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
                     $file_path = [];
-                    array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'name' =>explode(".", $request->file('file')->getClientOriginalName())[0] , 'type'=>explode(".",$request->file('file')->getClientOriginalName())[1]));
+                    // return $request->file('file')->getSize();
+                    array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'size' =>$request->file('file')->getSize(), 'name' =>$request->file('file')->getClientOriginalName(), 'type'=>explode(".",$request->file('file')->getClientOriginalName())[count(explode(".",$request->file('file')->getClientOriginalName()))-1]));
                     $file_path = json_encode($file_path);
                     // $file_path ='files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
 
