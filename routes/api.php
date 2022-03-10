@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\NotisController;
+use App\Http\Controllers\MymemoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -43,8 +44,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/test', [MymemoController::class,'test']);
 Route::post('/mymemoshow', [MymemoController::class,'MymemoShow']);
-Route::post('/postmemoshow',[MymemoController::class,'PostmemoShow']);
-
+Route::post('/deletememo/{id}',[MymemoController::class, 'MymemoDelete']);
+Route::post('/postmymemo',[MymemoController::class,'storeMymemo']);
+Route::post('/editmymemo',[MymemoController::class,'editMymemo']);
 
 Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);

@@ -17,6 +17,7 @@ class MymemoFactory extends Factory
             'mymemo' => $this->faker->name(),
             'mymemotitle' => $this->faker->name(),
             'user_id' => 1,
+            'url' => $this->faker->image(),
         ];
     }
 }

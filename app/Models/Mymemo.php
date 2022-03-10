@@ -11,5 +11,6 @@ class Mymemo extends Model
     protected $fillable = [
         'mymemo',
         'mymemotitle',
+        'url',
     ];
 }

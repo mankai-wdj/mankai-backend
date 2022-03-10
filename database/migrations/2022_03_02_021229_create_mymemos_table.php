@@ -18,6 +18,7 @@ class CreateMymemosTable extends Migration
             $table->foreignId("user_id");
             $table->string('mymemo');
             $table->string('mymemotitle');
+            $table->string('url');
             $table->timestamps();
         });
     }
