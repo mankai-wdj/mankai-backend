@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\MemoController;
 use App\Http\Controllers\NotisController;
 use App\Http\Controllers\MessageMemoController;
 use App\Http\Controllers\MymemoController;
@@ -44,7 +45,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-
 Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
 Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
@@ -78,3 +78,10 @@ Route::post('deletemypostmemos/{post_id}', [BoardController::class, 'deletePostM
 // MyPage-MyMemos-MessageMemo(CR)
 Route::get('showmymessagememos/{user_id}', [MessageMemoController::class, 'showMessageMemos']);
 Route::post('deletemymessagememos/{message_id}', [MessageMemoController::class, 'deleteMessageMemos']);
+
+
+Route::post('/post/memo', [MemoController::class, "PostMemo"]);
+Route::get('/show/memo/{user_id}', [MemoController::class, 'ShowMemo']);
+Route::get('/get/board/{user_id}', [MemoController::class, 'GetMyBoard']);
+Route::get('/show/memos/{memo_id}', [MemoController::class, 'editMemoView']);
+Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
