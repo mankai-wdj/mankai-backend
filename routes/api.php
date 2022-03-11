@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\NotisController;
+use App\Http\Controllers\MessageMemoController;
+use App\Http\Controllers\MymemoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -58,14 +60,21 @@ Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 
+// MyPage-MyPosts (CR)
 Route::get('myposts/{user_id}', [BoardController::class, "showMyPosts"]);
 Route::post('myposts/{post_id}', [Boardcontroller::class, 'editMyPosts']);
 
-Route::post('/test', [MymemoController::class, 'test']);
-Route::post('/mymemoshow', [MymemoController::class, 'MymemoShow']);
+// MyPage-MyMemos-MyMemo(CR)
 Route::post('/postmemoshow', [MymemoController::class, 'PostmemoShow']);
+Route::post('/mymemoshow', [MymemoController::class, 'MymemoShow']);
 
-Route::post('postmemo/{post_id}/{user_id}', [BoardController::class, "storePostMemo"]);
+
+// MyPage-MyMemos-PostMemo(CRUD)
+Route::post('postmemo/{post_id}/{user_id}/{memo_user_id}', [BoardController::class, "storePostMemo"]);
 Route::get('showmypostmemos/{user_id}', [BoardController::class, 'showPostMemos']);
 Route::post('editmypostmemos/{post_id}', [BoardController::class, 'editPostMemos']);
 Route::post('deletemypostmemos/{post_id}', [BoardController::class, 'deletePostMemos']);
+
+// MyPage-MyMemos-MessageMemo(CR)
+Route::get('showmymessagememos/{user_id}', [MessageMemoController::class, 'showMessageMemos']);
+Route::post('deletemymessagememos/{message_id}', [MessageMemoController::class, 'deleteMessageMemos']);

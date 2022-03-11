@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFreeBoardMemosTable extends Migration
+class CreateMessageMemosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class CreateFreeBoardMemosTable extends Migration
      */
     public function up()
     {
-        Schema::create('free_board_memos', function (Blueprint $table) {
+        Schema::create('message_memos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
+            $table->integer('user_id')->unsigned();
+            $table->foreignId('memo_user_id')
                 ->constrained('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('content_text');
-            $table->string('category');
-            $table->foreignId('post_id');
+            $table->integer('room_id')->unsigned();
+            $table->text('message')->nullable();
+            $table->string('file')->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +34,6 @@ class CreateFreeBoardMemosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('free_board_memos');
+        Schema::dropIfExists('message_memos');
     }
 }

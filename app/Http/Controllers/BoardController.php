@@ -64,10 +64,11 @@ class BoardController extends Controller
 
     // myPosts-Delete
 
-    public function storePostMemo(Request $request, $post_id, $user_id)
+    public function storePostMemo(Request $request, $post_id, $user_id, $memo_user_id)
     {
         $postMemo = new FreeBoardMemo();
         $postMemo->user_id = $user_id;
+        $postMemo->memo_user_id = $memo_user_id;
         $postMemo->content_text = $request->content_text;
         $postMemo->category = $request->category;
         $postMemo->post_id = $post_id;
@@ -82,15 +83,9 @@ class BoardController extends Controller
     {
         $postMemos = DB::table('free_board_memos')
             ->where('user_id', $user_id)
+            ->join('users', 'free_board_memos.user_id', '=', 'users.id')
+            ->select('free_board_memos.*', 'users.name')
             ->get();
-
-        foreach ($postMemos as $postMemo) {
-            $images = DB::table('free_board_images')
-                ->where('free_board_images.free_boards_id', $postMemo->post_id)
-                ->get();
-
-            $postMemo->images = $images;
-        }
 
         return $postMemos;
     }
@@ -107,12 +102,14 @@ class BoardController extends Controller
 
     public function deletePostMemos($post_id)
     {
-        $postMemo = FreeBoardMemo::where('post_id', $post_id);
+        $postMemo = FreeBoardMemo::find($post_id);
         $postMemo->delete();
 
         return "삭제성공";
     }
     //Memo-PostMemo-Delete
+
+
 
     public function Store(Request $request)
     {
