@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\MemoController;
 use App\Http\Controllers\NotisController;
 use App\Http\Controllers\MymemoController;
 use Illuminate\Http\Request;
@@ -62,4 +63,21 @@ Route::post('upload_post', [BoardController::class, "Store"]);
 Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
+<<<<<<< HEAD
 
+=======
+Route::post('/post/memo',[MemoController::class,"PostMemo"]);
+Route::get('/show/memo/{user_id}', [MemoController::class, 'ShowMemo']);
+Route::get('/get/board/{user_id}',[MemoController::class,'GetMyBoard']);
+Route::get('/show/memos/{memo_id}', [MemoController::class, 'editMemoView']);
+// Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
+// Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
+// Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
+// Route::post('/post/comment', [BoardController::class, "PostComment"]);
+// Route::post('/show/papago', [BoardController::class, "ShowPapago"]);
+// Route::post('/show/username/{user_id}', [BoardController::class, "ShowUserName"]);
+// Route::post('/update/comment', [BoardController::class, "UpdateComment"]);
+// Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComment"]);
+// Route::post('/post/like', [BoardController::class, "PostLike"]);
+// Route::post('/show/like', [BoardController::class, "ShowLike"]);
+>>>>>>> e6b080616334b1f76d6bfcd4ed7dca0a975878ba
