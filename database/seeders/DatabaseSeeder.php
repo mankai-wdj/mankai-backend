@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ChatmemoSeeder::class);
         $this->call(MymemoSeeder::class);
         $this->call(PostmemoSeeder::class);
+        $this->call(MemoSeeder::class);
     }
 }

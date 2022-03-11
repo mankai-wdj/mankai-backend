@@ -32,4 +32,14 @@ class MemoController extends Controller
 
         return $boards;
     }
+
+    public function DeleteMymemo(Request $request) {
+        $mymemoDelete = Memo::find($request->memo_id);
+        $mymemoDelete ->delete();
+
+        $memos = DB::table('memos')->where("user_id","=",$request->user_id)->get();
+
+
+        return $memos;
+    }
 }
