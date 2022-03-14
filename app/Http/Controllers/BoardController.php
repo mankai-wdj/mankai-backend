@@ -130,16 +130,15 @@ class BoardController extends Controller
 
         return $likes;
     }
-
     public function ShowPapago(Request $request)
     {
         $text = $request->text;
-
         $client_id = "W67VxGiecQuxoWQaqZ02"; // 네이버 개발자센터에서 발급받은 CLIENT ID
         $client_secret = "BxA1eiUXuT"; // 나중에 가릴것 ㅋㅋ
         $encText = urlencode($text);
-        $postvars = "source=ko&target=ja&text=" . $encText;
-        $url = "https://openapi.naver.com/v1/papago/n2mt";
+        $postvars = "query=".$encText;
+
+        $url = "https://openapi.naver.com/v1/papago/detectLangs";
         $is_post = true;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -147,17 +146,38 @@ class BoardController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
         $headers = array();
-        $headers[] = "X-Naver-Client-Id: " . $client_id;
-        $headers[] = "X-Naver-Client-Secret: " . $client_secret;
+        $headers[] = "X-Naver-Client-Id: ".$client_id;
+        $headers[] = "X-Naver-Client-Secret: ".$client_secret;
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
         $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        // echo "status_code:".$status_code."<br>";
         curl_close($ch);
+        $json = json_decode($response);
         if ($status_code == 200) {
-            return $response;
+            $langCode = $json -> langCode;
         } else {
-            return "Error!!";
+            return $response;
         }
+
+
+        $postvars = "source=".$langCode."&target=ja&text=".$encText;
+        $url = "https://openapi.naver.com/v1/papago/n2mt";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, $is_post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
+        $headers = array();
+        $headers[] = "X-Naver-Client-Id: ".$client_id;
+        $headers[] = "X-Naver-Client-Secret: ".$client_secret;
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return $response;
+
     }
+
+
 }
