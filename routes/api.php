@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\NotisController;
+use App\Http\Controllers\GroupController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -69,3 +70,10 @@ Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 // Route::post('/update/comment', [BoardController::class, "UpdateComment"]);
 // Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComment"]);
 // Route::post('/post/like', [BoardController::class, "PostLike"]);
+
+
+// 그룹
+
+Route::get('/show/detail_group/{group_id}',[GroupController::class,'ShowGroupDetail']);
+Route::get('/show/group',[GroupController::class,'ShowGroup']);
+Route::post('/post/group',[GroupController::class,'PostGroup']);
