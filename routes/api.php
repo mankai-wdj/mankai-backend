@@ -76,4 +76,16 @@ Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 
 Route::get('/show/detail_group/{group_id}',[GroupController::class,'ShowGroupDetail']);
 Route::get('/show/group',[GroupController::class,'ShowGroup']);
+Route::get('/show/groupboard/{group_id}',[GroupController::class,'ShowGroupBoard']);
+Route::get('/show/groupdata/{group_id}',[GroupController::class,'ShowGroupData']);
+Route::get('/show/groupcomment/{group_id}',[GroupController::class,'ShowGroupComment']);
+Route::get('/show/grouplike/{board_id}',[GroupController::class,'ShowGroupLike']);
+
 Route::post('/post/group',[GroupController::class,'PostGroup']);
+Route::post('/post/grouplike',[GroupController::class,'PostGroupLike']);
+Route::post('/delete/grouplike',[GroupController::class,'DeleteGroupLike']);
+Route::post('/update/groupcomment',[GroupController::class,'UpdateGroupComment']);
+Route::post('/post/groupcomment',[GroupController::class,'PostGroupComment']);
+Route::post('/post/groupboard',[GroupController::class,'PostGroupBoard']);
+Route::post('/post/groupboardimage',[GroupController::class,'PostGroupBoardImage']);
+Route::post('/delete/groupcomment/{comment_id}',[GroupController::class,'DeleteGroupComment']);
