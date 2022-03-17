@@ -80,8 +80,13 @@ Route::get('/show/groupboard/{group_id}',[GroupController::class,'ShowGroupBoard
 Route::get('/show/groupdata/{group_id}',[GroupController::class,'ShowGroupData']);
 Route::get('/show/groupcomment/{group_id}',[GroupController::class,'ShowGroupComment']);
 Route::get('/show/grouplike/{board_id}',[GroupController::class,'ShowGroupLike']);
+Route::get('/show/groupuser/{board_id}',[GroupController::class,'ShowGroupUser']);
 
+
+Route::post('/post/groupuser/',[GroupController::class,'PostGroupUser']);
+Route::post('/delete/groupuser/',[GroupController::class,'DeleteGroupUser']);
 Route::post('/post/group',[GroupController::class,'PostGroup']);
+Route::post('/update/group',[GroupController::class,'UpdateGroup']);
 Route::post('/post/grouplike',[GroupController::class,'PostGroupLike']);
 Route::post('/delete/grouplike',[GroupController::class,'DeleteGroupLike']);
 Route::post('/update/groupcomment',[GroupController::class,'UpdateGroupComment']);

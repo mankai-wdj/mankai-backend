@@ -20,6 +20,7 @@ class CreateGroupsTable extends Migration
             $table->string("logoImage")->nullable();
             $table->string("category")->nullable();
             $table->string("master")->nullable();
+            $table->string("password")->nullable();
             $table->timestamps();
         });
     }

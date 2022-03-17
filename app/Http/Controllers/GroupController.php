@@ -6,12 +6,35 @@ use App\Models\GroupBoard;
 use App\Models\GroupBoardImage;
 use App\Models\GroupBoardLike;
 use App\Models\GroupComment;
+use App\Models\GroupUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class GroupController extends Controller
 {
+    public function PostGroupUser(Request $request){
+        $groupuser = new GroupUser;
+        $groupuser -> group_id = $request -> group_id;
+        $groupuser -> user_id = $request -> user_id;
+        $groupuser -> position = "user";
+        $groupuser -> save();
+    }
+    public function DeleteGroupUser(Request $request){
+        $groupuser = DB::table("group_users")
+            ->where([
+                ["group_id","=",$request->group_id],
+                ["user_id","=",$request->user_id]]
+            );
+        $groupuser -> delete();
+    }
+    public function ShowGroupUser($board_id){
+        $group_users = DB::table('group_users')
+            ->where("group_id","=",$board_id)
+            ->get();
+
+        return $group_users;
+    }
     public function ShowGroup(){
         $groups=Group::all();
         return $groups;
@@ -152,7 +175,25 @@ class GroupController extends Controller
         // 이제 Read/Update/Delete를 할 수 있게 하면된다.
         return $path;
     }
+    public function UpdateGroup(Request $request){
+        $group = Group::find($request->group_id);
 
+        if($request -> file('img')){
+            $path = $request->file('img')->store('images','s3');
+            $url = Storage::url($path);
+        }
+        else
+            $url = $request->img;
+
+
+        $group->logoImage=  $url;
+        $group->category = $request->category;
+        $group->name = $request -> text;
+        $group->master = $request -> user_id;
+        $group->save();
+
+
+    }
 
     public function PostGroup(Request $request){
         $group = new Group;
@@ -162,9 +203,17 @@ class GroupController extends Controller
         $group->logoImage=  $url;
         $group->category = $request->category;
         $group->name = $request -> text;
+        $group->master = $request -> user_id;
         $group->save();
 
-        return $url;
+
+        $group_user = new GroupUser;
+        $group_user -> group_id =  $group -> id;
+        $group_user -> user_id =  $request -> user_id;
+        $group_user -> position = "master";
+        $group_user -> save();
+
+        return $group->id;
     }
 
     public function ShowGroupDetail($group_id){
