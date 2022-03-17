@@ -18,6 +18,7 @@ class TranslationController extends Controller
         curl_setopt($ch, CURLOPT_POST, $is_post);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         $headers = array();
         $headers[] = "X-Naver-Client-Id: ".$client_id;
         $headers[] = "X-Naver-Client-Secret: ".$client_secret;
@@ -54,6 +55,7 @@ class TranslationController extends Controller
         curl_setopt($ch, CURLOPT_POST, $is_post);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         $headers = array();
         $headers[] = "X-Naver-Client-Id: ".$client_id;
         $headers[] = "X-Naver-Client-Secret: ".$client_secret;

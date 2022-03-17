@@ -15,4 +15,8 @@ class FollowController extends Controller
         return $user;
 
     }
+
+    public function getFollows($id) {
+        return User::find($id)->following()->get();
+    }
 }

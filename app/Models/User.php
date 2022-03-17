@@ -12,7 +12,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $with = ['following'];
+    // protected $with = ['myMemos'];
     /**
      * The attributes that are mass assignable.
      *
@@ -24,6 +24,18 @@ class User extends Authenticatable
         'password',
     ];
 
+    protected static function boot() {
+
+        parent::boot();
+
+        static::created(function ($user) {
+            $officials = User::where('position', 'official')->get();
+            for($i = 0; $i < count($officials); $i++){
+                $user->following()->toggle($officials[$i]);
+            }
+
+        });
+    }
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -48,6 +60,10 @@ class User extends Authenticatable
 
     public function myRooms() {
         return $this->belongsToMany(Room::class);
+    }
+
+    public function myMemos() {
+        return $this->hasMany(AllMemo::class);
     }
 
     public function following() {

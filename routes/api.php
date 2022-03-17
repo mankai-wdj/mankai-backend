@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\MemoController;
 use App\Http\Controllers\NotisController;
 use App\Http\Controllers\TranslationController;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('test/{id}' ,[ChatController::class,'test']);
 
 Route::post('register' ,[AuthController::class,'register']);
 
@@ -40,6 +42,10 @@ Route::middleware('auth:sanctum')->group(function() {
 
 Route::post('user/follow' ,[FollowController::class,'store'])->name('storeFollow'); //follow 저장
 
+Route::get('follows/{id}', [FollowController::class, 'getFollows']);
+
+Route::get('memo/{id}', [MemoController::class, 'showMemos']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -59,3 +65,5 @@ Route::post('room/check' ,[ChatController::class,'deleteRoom'])->name('deleteRoo
 Route::post('user/invite' ,[ChatController::class,'inviteUser'])->name('userInvite'); // user 초대
 
 Route::post('/translate/text', [TranslationController::class, 'translation']);  // translation
+
+Route::post('/storememo', [MemoController::class, 'storePostMemo']);

@@ -30,7 +30,7 @@ class AuthController extends Controller
             ]);
 
             $token = $user->createToken($user->email.'_Token')->plainTextToken;
-            
+
             return response()->json([
                 'status'=>200,
                 'username'=>$user->name,
