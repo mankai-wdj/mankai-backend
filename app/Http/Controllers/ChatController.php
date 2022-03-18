@@ -23,7 +23,6 @@ use function PHPUnit\Framework\isNull;
 
 class ChatController extends Controller
 {
-
     public function test($id) {
         $user = User::find($id);
         return $user->myMemos()->get();
@@ -32,6 +31,15 @@ class ChatController extends Controller
         // dd(Auth::user());
         $messages = Room::find($id)->messages()->with('user')->latest()->paginate(20);
         return $messages;
+    }
+
+
+    public function sidebarData($id) {
+        User::find($id);
+        $files = Message::where('room_id', $id)->where('file', 'like', '[{%')->get();
+        $images = Message::where('room_id', $id)->where('file', 'like', '%images%')->get();
+        $memos = Message::where('room_id', $id)->where('memos', '<>', null)->get();
+        return ["files" => $files, "images"=>$images, "memos" => $memos];
     }
 
     public function sendMessageBot(Request $request) {
@@ -92,6 +100,7 @@ class ChatController extends Controller
     }
 
     public function messageSend(Request $request) {
+
         return $this->sendMessage($request);
     }
 
@@ -195,7 +204,7 @@ class ChatController extends Controller
                 // return 1;
                 for($i =0; $i< count($request->memos); $i++) {
                     $message = $user->messages()->create([
-                        'message' => $request->message,
+                        // 'message' => $request->message,
                         'room_id' => $request->room_id,
                         'file' => $file_path,
                         'memos' => json_encode($request->memos[$i]),
@@ -207,6 +216,14 @@ class ChatController extends Controller
 
                 return 'memo send complate';
 
+            }else if ($request->group) {
+                $message = $user->messages()->create([
+                    'room_id' => $request->room_id,
+                    'group' => json_encode($request->group),
+                ]);
+                for($j = 0; $j < count($request->to_users); $j++){
+                    broadcast(new MessageSent($message->load('user'), $request->to_users[$j]));
+                }
             }else if(!$request->message){
                 return;
             }

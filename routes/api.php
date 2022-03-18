@@ -46,6 +46,8 @@ Route::get('follows/{id}', [FollowController::class, 'getFollows']);
 
 Route::get('memo/{id}', [MemoController::class, 'showMemos']);
 
+Route::get('sidebar/{id}', [ChatController::class, 'sidebarData']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

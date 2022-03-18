@@ -13,6 +13,7 @@ class Message extends Model
         'room_id',
         'file',
         'memos',
+        'group',
     ];
     public function user() {
         return $this->belongsTo(User::class);
