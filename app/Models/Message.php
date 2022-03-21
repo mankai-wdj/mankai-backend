@@ -14,6 +14,7 @@ class Message extends Model
         'file',
         'memos',
         'group',
+        'read_users'
     ];
     public function user() {
         return $this->belongsTo(User::class);
