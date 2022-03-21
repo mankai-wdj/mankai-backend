@@ -8,12 +8,20 @@ use Illuminate\Support\Facades\DB;
 
 class MemoController extends Controller
 {
+
     public function PostMemo(Request $request) {
         $memo = new Memo();
         $memo -> memo = $request ->content;
         $memo -> user_id = $request -> writer;
         $memo -> save(); 
     }
+
+    public function UpdateMemo(Request $request) {
+        $memo = Memo::find($request->memo_id);
+        $memo -> memo = $request ->text;
+        $memo -> save(); 
+    }
+
     public function ShowMemo($user_id){
         $memos = DB::table('memos')
         ->where("user_id","=",$user_id)->get();
@@ -24,6 +32,9 @@ class MemoController extends Controller
         $memo = Memo::find($request->memo_id);
         return $memo;
     }
+
+    
+
     public function GetMyBoard($user_id){
         $boards = DB::table('free_boards')
         ->where("user_id","=",$user_id)
@@ -37,7 +48,8 @@ class MemoController extends Controller
         $mymemoDelete = Memo::find($request->memo_id);
         $mymemoDelete ->delete();
 
-        $memos = DB::table('memos')->where("user_id","=",$request->user_id)->get();
+        $memos = DB::table('memos')->
+                where("user_id","=",$request->user_id)->get();
 
 
         return $memos;

@@ -67,9 +67,12 @@ Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 
 
 Route::post('/post/memo',[MemoController::class,"PostMemo"]);
+Route::post('/update/memo',[MemoController::class,"UpdateMemo"]);
+//내 메모 수정*(Update)
 Route::get('/show/memo/{user_id}', [MemoController::class, 'ShowMemo']);
 Route::get('/get/board/{user_id}',[MemoController::class,'GetMyBoard']);
 Route::get('/show/memos/{memo_id}', [MemoController::class, 'editMemoView']);
+//내 메모 수정 할때 수정 페이지에 기존 내용을 표시해주는 것
 Route::post('/deletememo',[MemoController::class, 'DeleteMymemo']);
 // Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
 // Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
