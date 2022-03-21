@@ -2,8 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Message;
-use App\Models\User;
+use App\Models\Room;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,20 +11,23 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UsersCommunication implements ShouldBroadcast
+use function Symfony\Component\Translation\t;
+
+class InviteEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $userId;
-    public $message;
+    public $toUserId;
+    public $room;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Message $message, $userId)
+    public function __construct(Room $room, $toUserId)
     {
-        $this->userId = $userId;
-        $this->message = $message;
+        $this->toUserId = $toUserId;
+        $this->room = $room;
     }
 
     /**
@@ -35,11 +37,11 @@ class UsersCommunication implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('user.'.$this->userId);
+        return new Channel('user.'.$this->toUserId);
     }
 
     public function broadcastAs()
     {
-        return 'user-connect';
+        return 'invite-event';
     }
 }

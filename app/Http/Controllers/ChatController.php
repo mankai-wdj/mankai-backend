@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\InviteEvent;
 use App\Events\MessageSent;
 use App\Events\Users;
 use App\Events\UsersCommunication;
@@ -27,8 +28,24 @@ class ChatController extends Controller
         $user = User::find($id);
         return $user->myMemos()->get();
     }
-    public function getMessages($id) {
+    public function getMessages($id, $userId) {
         // dd(Auth::user());
+        // return ($userId);
+        $read_messages = Room::find($id)->messages()->where('user_id', '<>', $userId)->get();
+        // return $read_messages;
+        for($i = 0; $i< count($read_messages); $i++) {
+            $read_message = $read_messages[$i];
+            // return $read_message;
+            $read_users = json_decode($read_message->read_users);
+            $read_users = array_filter($read_users, function ($user_id) use($userId)  {   // read_users 에서 유저 id 빼주기 해야됨
+                            return $user_id != $userId;
+                        });
+            $read_message->read_users = json_encode($read_users);
+            $read_message->save();
+            // $read_messages[$i]->read_users = json_encode(array(json_decode($read_messages[$i]->read_users)));
+
+        }
+        // return $read_messages;
         $messages = Room::find($id)->messages()->with('user')->latest()->paginate(20);
         return $messages;
     }
@@ -113,7 +130,7 @@ class ChatController extends Controller
         $read_users = [];
         for ($i = 0; $i< count($request->to_users); $i++){
             if($request->to_users[$i] != $user->id){
-                array_push($read_users, $request->to_users[$i]);
+                array_push($read_users, (int)$request->to_users[$i]);
             }
         }
         // Log::info($read_users);
@@ -152,8 +169,9 @@ class ChatController extends Controller
 
                         // return $message;
                         // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
+                        broadcast(new MessageSent($message->load('user'), $request->room_id));
                         for($j = 0; $j < count($request->to_users); $j++){
-                            broadcast(new MessageSent($message->load('user'), $request->to_users[$j]));
+                            broadcast(new UsersCommunication($message->load('user'), $request->to_users[$j]));
                             // Log::info('broadcast for', $j);
                         }
                     }
@@ -172,9 +190,11 @@ class ChatController extends Controller
                         'file' => $files,
                         'read_users' => json_encode($read_users)
                     ]);
+                    broadcast(new MessageSent($message->load('user'), $request->room_id));
                     for($i = 0; $i < count($request->to_users); $i++){
-                        broadcast(new MessageSent($message->load('user'), $request->to_users[$i]));
+                        broadcast(new UsersCommunication($message->load('user'), $request->to_users[$i]));
                     }
+
                 }
 
                 // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
@@ -202,8 +222,9 @@ class ChatController extends Controller
                     'file' => $file_path,
                     'read_users' => json_encode($read_users)
                 ]);
+                broadcast(new MessageSent($message->load('user'), $request->room_id));
                 for($i = 0; $i < count($request->to_users); $i++){
-                    broadcast(new MessageSent($message->load('user'), $request->to_users[$i]));
+                    broadcast(new UsersCommunication($message->load('user'), $request->to_users[$i]));
                 }
 
                 // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
@@ -220,8 +241,9 @@ class ChatController extends Controller
                         'memos' => json_encode($request->memos[$i]),
                         'read_users' => json_encode($read_users)
                     ]);
+                    broadcast(new MessageSent($message->load('user'), $request->room_id));
                     for($j = 0; $j < count($request->to_users); $j++){
-                        broadcast(new MessageSent($message->load('user'), $request->to_users[$j]));
+                        broadcast(new UsersCommunication($message->load('user'), $request->to_users[$j]));
                     }
                 }
 
@@ -233,8 +255,9 @@ class ChatController extends Controller
                     'group' => json_encode($request->group),
                     'read_users' => json_encode($read_users),
                 ]);
+                broadcast(new MessageSent($message->load('user'), $request->room_id));
                 for($j = 0; $j < count($request->to_users); $j++){
-                    broadcast(new MessageSent($message->load('user'), $request->to_users[$j]));
+                    broadcast(new UsersCommunication($message->load('user'), $request->to_users[$j]));
                 }
             }else if(!$request->message){
                 return;
@@ -249,9 +272,11 @@ class ChatController extends Controller
             }
 
             // event(new MessageSent($message->load('user')));
+            broadcast(new MessageSent($message->load('user'), $request->room_id));
             for($i = 0; $i < count($request->to_users); $i++){
-                broadcast(new MessageSent($message->load('user'), $request->to_users[$i]));
+                broadcast(new UsersCommunication($message->load('user'), $request->to_users[$i]));
             }
+
 
             // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
 
@@ -284,13 +309,18 @@ class ChatController extends Controller
         return $room;
     }
 
+    public function getChatRoomById($id) {
+        $chatroom = Room::find($id);
+        return $chatroom;
+    }
+
     public function getRooms($id) {  // user rooms get
         $user = User::find($id);
         // $user_id = $id;
         // $rooms = $user->myRooms()->get();
         $chatroom = Room::query()->leftJoin('room_user', 'rooms.id', '=', 'room_user.room_id')
         ->where('room_user.user_id', $user->id)
-        ->whereIn('rooms.id', function ($query) use ($id) {return $query->select('room_id')->from('room_user')->where('exists', false)->where('user_id',$id)->get(); })->select('rooms.*')->get();
+        ->whereIn('rooms.id', function ($query) use ($id) {return $query->select('room_id')->from('room_user')->where('exists', false)->where('user_id',$id)->get(); })->select('rooms.*')->orderBy('updated_at', 'desc')->get();
         return $chatroom;
     }
 
@@ -315,6 +345,7 @@ class ChatController extends Controller
             for($i=0; $i < count($users1); $i++) {
                 $user = User::find($users1[$i]->user_id);
                 $user->myRooms()->attach($room->id);
+                broadcast(new InviteEvent($room, $user->id));
             }
         }else {
             // return $room;
@@ -331,6 +362,7 @@ class ChatController extends Controller
 
                 $user = User::find($users1[$i]['id']);
                 $user->myRooms()->attach($room->id);
+                broadcast(new InviteEvent($room, $user->id));
             }
         }
         return $room;
