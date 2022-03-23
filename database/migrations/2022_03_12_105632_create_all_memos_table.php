@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMessageMemosTable extends Migration
+class CreateAllMemosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreateMessageMemosTable extends Migration
      */
     public function up()
     {
-        Schema::create('message_memos', function (Blueprint $table) {
+        Schema::create('all_memos', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->unsigned();
+            $table->string('memo_title');
             $table->foreignId('memo_user_id')
                 ->constrained('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->integer('room_id')->unsigned();
-            $table->text('message')->nullable();
-            $table->string('file')->nullable();
+            $table->string('content_text')->nullable();
             $table->timestamps();
         });
     }
@@ -34,6 +32,6 @@ class CreateMessageMemosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('message_memos');
+        Schema::dropIfExists('all_memos');
     }
 }

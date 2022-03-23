@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\FreeBoard;
+use App\Models\FreeBoardImage;
 use App\Models\FreeBoardLike;
-use App\Models\FreeBoardMemo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,31 +15,18 @@ class BoardController extends Controller
 {
     public function Test()
     {
-
         return "wda";
     }
 
     public function showMyPosts($user_id)
     {
-        $boards = DB::table("free_boards")
-            ->where("free_boards.user_id", $user_id)
-            ->get();
-
-        foreach ($boards as $board) {
-            $images = DB::table('free_board_images')
-                ->where('free_board_images.free_boards_id', $board->id)
-                ->get();
-
-            $comments = DB::table('comments')
-                ->where('comments.freeboard_id', $board->id)
-                ->get();
-
-            $board->images = $images;
-            $board->comments = $comments;
-        }
+        $boards_post = DB::table("free_boards")
+            ->where('free_boards.user_id', $user_id)
+            ->latest()
+            ->paginate(5);
 
 
-        return $boards;
+        return $boards_post;
     }
     // myPosts-Read
 
@@ -60,54 +47,11 @@ class BoardController extends Controller
 
         $board->content_text = $request->content_text;
     }
+    // 아직 미완성이지만 editMyPost가 아니라 editPost여야한다.
     // myPosts-Update
 
     // myPosts-Delete
 
-    public function storePostMemo(Request $request, $post_id, $user_id, $memo_user_id)
-    {
-        $postMemo = new FreeBoardMemo();
-        $postMemo->user_id = $user_id;
-        $postMemo->memo_user_id = $memo_user_id;
-        $postMemo->content_text = $request->content_text;
-        $postMemo->category = $request->category;
-        $postMemo->post_id = $post_id;
-
-        $postMemo->save();
-
-        return $postMemo;
-    }
-    //Memo-PostMemo-Create
-
-    public function showPostMemos($user_id)
-    {
-        $postMemos = DB::table('free_board_memos')
-            ->where('user_id', $user_id)
-            ->join('users', 'free_board_memos.user_id', '=', 'users.id')
-            ->select('free_board_memos.*', 'users.name')
-            ->get();
-
-        return $postMemos;
-    }
-    //Memo-PostMemo-Read
-
-    public function editPostMemos(Request $request, $post_id)
-    {
-        $postMemo = FreeBoardMemo::where('post_id', $post_id)
-            ->update(['content_text' => $request->content_text]);
-
-        return $postMemo;
-    }
-    //Memo-PostMemo-Update
-
-    public function deletePostMemos($post_id)
-    {
-        $postMemo = FreeBoardMemo::find($post_id);
-        $postMemo->delete();
-
-        return "삭제성공";
-    }
-    //Memo-PostMemo-Delete
 
 
 

@@ -23,6 +23,8 @@ class User extends Authenticatable
         'password',
     ];
 
+    // protected $with = ['myMemos'];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -41,4 +43,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function myMemos()
+    {
+        return $this->hasMany(AllMemo::class);
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followed_id');
+    }
 }

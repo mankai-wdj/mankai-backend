@@ -5,12 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Mymemo extends Model
+class AllMemo extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'mymemo',
-        'mymemotitle',
-        'url',
+        'memo_title',
+        'user_id',
+        'content_text',
     ];
+
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

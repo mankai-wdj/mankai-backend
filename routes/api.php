@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\NotisController;
@@ -43,8 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-
+Route::get('follows/{id}', [FollowController::class, 'getFollows']);
+Route::get('memo/{id}', [MemoController::class, 'showMemos']);
 Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
 Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
@@ -60,28 +61,13 @@ Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 
-// MyPage-MyPosts (CR)
+// MyPage-MyPosts (RU)
 Route::get('myposts/{user_id}', [BoardController::class, "showMyPosts"]);
 Route::post('myposts/{post_id}', [Boardcontroller::class, 'editMyPosts']);
 
-// MyPage-MyMemos-MyMemo(CR)
-Route::post('/postmemoshow', [MymemoController::class, 'PostmemoShow']);
-Route::post('/mymemoshow', [MymemoController::class, 'MymemoShow']);
+// MyPage-MyMemos(CRUD)
+Route::post('storememo/', [MemoController::class, "storePostMemo"]);
+Route::post('deletememos/{post_id}', [MemoController::class, 'deletePostMemos']);
 
-
-// MyPage-MyMemos-PostMemo(CRUD)
-Route::post('postmemo/{post_id}/{user_id}/{memo_user_id}', [BoardController::class, "storePostMemo"]);
-Route::get('showmypostmemos/{user_id}', [BoardController::class, 'showPostMemos']);
-Route::post('editmypostmemos/{post_id}', [BoardController::class, 'editPostMemos']);
-Route::post('deletemypostmemos/{post_id}', [BoardController::class, 'deletePostMemos']);
-
-// MyPage-MyMemos-MessageMemo(CR)
-Route::get('showmymessagememos/{user_id}', [MessageMemoController::class, 'showMessageMemos']);
-Route::post('deletemymessagememos/{message_id}', [MessageMemoController::class, 'deleteMessageMemos']);
-
-
-Route::post('/post/memo', [MemoController::class, "PostMemo"]);
-Route::get('/show/memo/{user_id}', [MemoController::class, 'ShowMemo']);
-Route::get('/get/board/{user_id}', [MemoController::class, 'GetMyBoard']);
-Route::get('/show/memos/{memo_id}', [MemoController::class, 'editMemoView']);
-Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
+Route::get('getmemoimages/{memo_id}', [MemoController::class, 'getMemoImages']);
+Route::post('updatememo', [MemoController::class, 'updateMemo']);
