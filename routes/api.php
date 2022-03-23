@@ -83,13 +83,16 @@ Route::get('/show/grouplike/{board_id}',[GroupController::class,'ShowGroupLike']
 Route::get('/show/groupuser/{board_id}',[GroupController::class,'ShowGroupUser']);
 
 
+Route::post('/post/intro/',[GroupController::class,'PostGroupIntro']);
 Route::post('/post/groupuser/',[GroupController::class,'PostGroupUser']);
 Route::post('/delete/groupuser/',[GroupController::class,'DeleteGroupUser']);
+Route::post('/delete/dashgroupuser/{groupUser_id}',[GroupController::class,'DeleteDashGroupUser']);
 Route::post('/post/group',[GroupController::class,'PostGroup']);
 Route::post('/update/group',[GroupController::class,'UpdateGroup']);
 Route::post('/post/grouplike',[GroupController::class,'PostGroupLike']);
 Route::post('/delete/grouplike',[GroupController::class,'DeleteGroupLike']);
 Route::post('/update/groupcomment',[GroupController::class,'UpdateGroupComment']);
+Route::post('/update/groupuser',[GroupController::class,'UpdateGroupUser']);
 Route::post('/post/groupcomment',[GroupController::class,'PostGroupComment']);
 Route::post('/post/groupboard',[GroupController::class,'PostGroupBoard']);
 Route::post('/post/groupboardimage',[GroupController::class,'PostGroupBoardImage']);

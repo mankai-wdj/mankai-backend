@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Storage;
 
 class GroupController extends Controller
 {
+    public function PostGroupIntro(Request $request){
+        $group = GROUP::find($request->group_id);
+        $group -> intro = $request -> text;
+        $group -> save();
+
+    }
     public function PostGroupUser(Request $request){
         $groupuser = new GroupUser;
         $groupuser -> group_id = $request -> group_id;
@@ -21,6 +27,7 @@ class GroupController extends Controller
         $groupuser -> save();
     }
     public function DeleteGroupUser(Request $request){
+        // 가입해지 버튼 눌렀을때임
         $groupuser = DB::table("group_users")
             ->where([
                 ["group_id","=",$request->group_id],
@@ -28,9 +35,37 @@ class GroupController extends Controller
             );
         $groupuser -> delete();
     }
+    public function DeleteDashGroupUser($groupUser_id){
+        // 강제로 해지 시킬때임
+        $groupUser = GroupUser::find($groupUser_id);
+        $group_id = $groupUser -> group_id;
+        $groupUser -> delete();
+
+        $master = DB::table("group_users")
+            ->where("group_users.position","=","master")
+            ->where("group_id","=",$group_id)
+            ->join("users","users.id","=","group_users.user_id")
+            ->select("group_users.*","users.name")
+            ->get();
+
+        $user = DB::table("group_users")
+            ->where("group_users.position","=","user")
+            ->where("group_id","=",$group_id)
+            ->join("users","users.id","=","group_users.user_id")
+            ->select("group_users.*","users.name")
+            ->get();
+
+        $group = new GroupUser;
+        $group -> master = $master;
+        $group -> user = $user;
+
+        return $group;
+    }
     public function ShowGroupUser($board_id){
         $group_users = DB::table('group_users')
             ->where("group_id","=",$board_id)
+            ->join("users","users.id","=","group_users.user_id")
+            ->select("group_users.*","users.name")
             ->get();
 
         return $group_users;
@@ -56,7 +91,37 @@ class GroupController extends Controller
         $comments->save();
 
     }
+    public function UpdateGroupUser(Request $request){
+        $groupUser = GroupUser::find($request->data);
+        if($groupUser -> position == "master")
+            $groupUser -> position = "user";
+        else
+            $groupUser -> position = "master";
 
+        $groupUser -> save();
+
+        $master = DB::table("group_users")
+            ->where("group_users.position","=","master")
+            ->where("group_id","=",$groupUser->group_id)
+            ->join("users","users.id","=","group_users.user_id")
+            ->select("group_users.*","users.name")
+            ->get();
+
+        $user = DB::table("group_users")
+            ->where("group_users.position","=","user")
+            ->where("group_id","=",$groupUser->group_id)
+            ->join("users","users.id","=","group_users.user_id")
+            ->select("group_users.*","users.name")
+            ->get();
+
+
+
+        $group = new GroupUser;
+        $group -> master = $master;
+        $group -> user = $user;
+
+        return $group;
+    }
     public function ShowGroupComment($group_id){
         $comments = DB::table("group_comments")
             ->where('group_board_id', '=', $group_id)
