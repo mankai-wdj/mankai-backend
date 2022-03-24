@@ -75,7 +75,7 @@ Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 // 그룹
 
 Route::get('/show/detail_group/{group_id}',[GroupController::class,'ShowGroupDetail']);
-Route::get('/show/group',[GroupController::class,'ShowGroup']);
+Route::get('/show/group/{search}',[GroupController::class,'ShowGroup']);
 Route::get('/show/groupboard/{group_id}',[GroupController::class,'ShowGroupBoard']);
 Route::get('/show/groupdata/{group_id}',[GroupController::class,'ShowGroupData']);
 Route::get('/show/groupcomment/{group_id}',[GroupController::class,'ShowGroupComment']);

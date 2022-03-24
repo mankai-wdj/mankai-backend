@@ -68,10 +68,22 @@ class GroupController extends Controller
             ->select("group_users.*","users.name")
             ->get();
 
+
+
         return $group_users;
     }
-    public function ShowGroup(){
-        $groups=Group::all();
+    public function ShowGroup($search){
+        if($search == "NULLDATA")
+            $groups=Group::all();
+        else
+            $groups = DB::table("groups")->where("name","like","%".$search."%") -> get();
+
+        for($i=0 ; $i<count($groups) ; $i++)
+        {
+            $group_id = $groups[$i]->id;
+            $groupUsers = DB::table('group_users') -> where("group_id","=",$group_id) -> get();
+            $groups[$i]->length = count($groupUsers);
+        }
         return $groups;
     }
     public function ShowGroupBoard($group_id){
@@ -79,7 +91,8 @@ class GroupController extends Controller
             ->where("group_id","=",$group_id)
             ->join("users","users.id","=","group_boards.user_id")
             ->select("group_boards.*",'users.name')
-            ->get();
+            ->latest()
+            ->paginate(5);
 
         return $groups;
     }
@@ -255,6 +268,10 @@ class GroupController extends Controller
         $group->category = $request->category;
         $group->name = $request -> text;
         $group->master = $request -> user_id;
+        if($request->password)
+            $group->password = $request -> password;
+        else
+            $group->password=null;
         $group->save();
 
 
@@ -269,6 +286,9 @@ class GroupController extends Controller
         $group->category = $request->category;
         $group->name = $request -> text;
         $group->master = $request -> user_id;
+        if($request -> password)
+            $group->password = $request->password;
+
         $group->save();
 
 
