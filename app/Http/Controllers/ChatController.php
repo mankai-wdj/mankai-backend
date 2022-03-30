@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeleteRoomEvent;
 use App\Events\InviteEvent;
 use App\Events\MessageSent;
+use App\Events\ReadEvent;
 use App\Events\Users;
 use App\Events\UsersCommunication;
 use App\Models\Message;
@@ -24,28 +26,7 @@ use function PHPUnit\Framework\isNull;
 
 class ChatController extends Controller
 {
-    public function test($id) {
-        $user = User::find($id);
-        return $user->myMemos()->get();
-    }
     public function getMessages($id, $userId) {
-        // dd(Auth::user());
-        // return ($userId);
-        $read_messages = Room::find($id)->messages()->where('user_id', '<>', $userId)->get();
-        // return $read_messages;
-        for($i = 0; $i< count($read_messages); $i++) {
-            $read_message = $read_messages[$i];
-            // return $read_message;
-            $read_users = json_decode($read_message->read_users);
-            $read_users = array_filter($read_users, function ($user_id) use($userId)  {   // read_users 에서 유저 id 빼주기 해야됨
-                            return $user_id != $userId;
-                        });
-            $read_message->read_users = json_encode($read_users);
-            $read_message->save();
-            // $read_messages[$i]->read_users = json_encode(array(json_decode($read_messages[$i]->read_users)));
-
-        }
-        // return $read_messages;
         $messages = Room::find($id)->messages()->with('user')->latest()->paginate(20);
         return $messages;
     }
@@ -53,9 +34,9 @@ class ChatController extends Controller
 
     public function sidebarData($id) {
         User::find($id);
-        $files = Message::where('room_id', $id)->where('file', 'like', '[{%')->get();
-        $images = Message::where('room_id', $id)->where('file', 'like', '%images%')->get();
-        $memos = Message::where('room_id', $id)->where('memos', '<>', null)->get();
+        $files = Message::where('room_id', $id)->where('file', 'like', '[{%')->latest()->get();
+        $images = Message::where('room_id', $id)->where('file', 'like', '%images%')->latest()->get();
+        $memos = Message::where('room_id', $id)->where('memos', '<>', null)->latest()->get();
         return ["files" => $files, "images"=>$images, "memos" => $memos];
     }
 
@@ -122,8 +103,7 @@ class ChatController extends Controller
     }
 
     public function sendMessage($request) {  // send message
-        // return ($request->to_users[0]);
-        // return is_array($request->file('file'));
+
         $file_path = null;
         $images = [];
         $user = User::find($request->user_id);
@@ -133,15 +113,11 @@ class ChatController extends Controller
                 array_push($read_users, (int)$request->to_users[$i]);
             }
         }
-        // Log::info($read_users);
-        // dd($request->file());
+
         $room = Room::find($request->room_id);
         if ($request->hasFile('file')) {
-            // array_push($files, $request->file('file'));
-            // dd(is_array($request->file('file')));
             if(is_array($request->file('file'))) {
                 for($i = 0; $i < count($request->file('file')); $i++){
-                    // Log::info('for start', $i);
                     $fileType = explode("/",$request->file('file')[$i]->getClientMimeType());
 
                     if($fileType[0] == 'image'){
@@ -149,13 +125,10 @@ class ChatController extends Controller
                         $request->file('file')[$i]->storeAs('/public/images/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
                         $file_path ='images/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
                         array_push($images, $file_path);
-                        // return $request->file('file')[$i];
                     }else {
                         $fileName = time() . '_' . $request->file('file')[$i]->getClientOriginalName();
                         $request->file('file')[$i]->storeAs('/public/files/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
-                        // $file_path ='files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
                         $file_path = [];
-                        // return $request->file('file')[$i]->getSize();
 
                         array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'size' =>$request->file('file')[$i]->getSize() , 'name' =>$request->file('file')[$i]->getClientOriginalName() , 'type'=>explode(".",$request->file('file')[$i]->getClientOriginalName())[count(explode(".",$request->file('file')[$i]->getClientOriginalName()))-1]));
                         $file_path = json_encode($file_path);
@@ -167,12 +140,9 @@ class ChatController extends Controller
                             'read_users' => json_encode($read_users)
                         ]);
 
-                        // return $message;
-                        // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
                         broadcast(new MessageSent($message->load('user'), $request->room_id));
                         for($j = 0; $j < count($request->to_users); $j++){
                             broadcast(new UsersCommunication($message->load('user'), $request->to_users[$j]));
-                            // Log::info('broadcast for', $j);
                         }
                     }
                 }
@@ -197,7 +167,6 @@ class ChatController extends Controller
 
                 }
 
-                // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
             }else {
                 $fileType = explode("/",$request->file('file')->getClientMimeType());
                 if($fileType[0] == 'image') {
@@ -206,14 +175,11 @@ class ChatController extends Controller
                     $request->file('file')->storeAs('/public/images/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
                     $file_path ='images/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
                 }else {
-                    // return explode(".",$request->file('file')->getClientOriginalName());
                     $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
                     $request->file('file')->storeAs('/public/files/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
                     $file_path = [];
-                    // return $request->file('file')->getSize();
                     array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'size' =>$request->file('file')->getSize(), 'name' =>$request->file('file')->getClientOriginalName(), 'type'=>explode(".",$request->file('file')->getClientOriginalName())[count(explode(".",$request->file('file')->getClientOriginalName()))-1]));
                     $file_path = json_encode($file_path);
-                    // $file_path ='files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
 
                 }
                 $message = $user->messages()->create([
@@ -226,16 +192,12 @@ class ChatController extends Controller
                 for($i = 0; $i < count($request->to_users); $i++){
                     broadcast(new UsersCommunication($message->load('user'), $request->to_users[$i]));
                 }
-
-                // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
             }
 
         }else{
             if($request->memos) {
-                // return 1;
                 for($i =0; $i< count($request->memos); $i++) {
                     $message = $user->messages()->create([
-                        // 'message' => $request->message,
                         'room_id' => $request->room_id,
                         'file' => $file_path,
                         'memos' => json_encode($request->memos[$i]),
@@ -270,16 +232,10 @@ class ChatController extends Controller
                     'read_users' => json_encode($read_users)
                 ]);
             }
-
-            // event(new MessageSent($message->load('user')));
             broadcast(new MessageSent($message->load('user'), $request->room_id));
             for($i = 0; $i < count($request->to_users); $i++){
                 broadcast(new UsersCommunication($message->load('user'), $request->to_users[$i]));
             }
-
-
-            // broadcast(new UsersCommunication($message->load('user'), $user))->toOthers();
-
         }
 
 
@@ -295,7 +251,7 @@ class ChatController extends Controller
             DB::table('room_user')->where('room_id',$request->room['id'])->where('user_id',$request->user_id)->update(['exists' => 1]);
 
         }else {
-            $pivot = DB::table('room_user')->where('room_id',$request->room['id'])->where('user_id',$request->user_id)->delete();
+            DB::table('room_user')->where('room_id',$request->room['id'])->where('user_id',$request->user_id)->delete();
 
             $updateUsers = json_decode($room->users);
             for($i = 0; $i < count($updateUsers); $i++) {
@@ -305,6 +261,10 @@ class ChatController extends Controller
                 }
             };
             $room->users = json_encode($updateUsers);
+            $room->save();
+            for($i=0; $i < count($updateUsers); $i++) {
+                broadcast(new DeleteRoomEvent($room, $updateUsers[$i]->user_id));
+            }
         }
         return $room;
     }
@@ -316,8 +276,6 @@ class ChatController extends Controller
 
     public function getRooms($id) {  // user rooms get
         $user = User::find($id);
-        // $user_id = $id;
-        // $rooms = $user->myRooms()->get();
         $chatroom = Room::query()->leftJoin('room_user', 'rooms.id', '=', 'room_user.room_id')
         ->where('room_user.user_id', $user->id)
         ->whereIn('rooms.id', function ($query) use ($id) {return $query->select('room_id')->from('room_user')->where('exists', false)->where('user_id',$id)->get(); })->select('rooms.*')->orderBy('updated_at', 'desc')->get();
@@ -325,19 +283,16 @@ class ChatController extends Controller
     }
 
     public function inviteUser(Request $request) {  // invite users
-        // return $request;
+
         $room = Room::find($request->room['id']);
-        // return $room['type'];
         $users = $request->inviteUsers;
-        // return gettype($users[0]['id']);
-        // return gettype($request->user);
         $users1 = [];
         if($room['type'] == 'dm') {
             $users1 = [...$users1, ...json_decode($room->users)];
             $room = new Room();
 
             for($i = 0; $i < count($users); $i++){
-                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name']));  //여기 에러
+                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name'], 'country' => $users[$i]['country']));
             }
             $room->users = json_encode($users1);
             $room->type = "group";
@@ -348,31 +303,29 @@ class ChatController extends Controller
                 broadcast(new InviteEvent($room, $user->id));
             }
         }else {
-            // return $room;
             $users1 = json_decode($room->users);
             for($i = 0; $i < count($users); $i++){
-                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name'], 'position' => $users[$i]['position']));
+                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name'], 'position' => $users[$i]['position'], 'country' => $users[$i]['country']));
             }
             $room->users = json_encode($users1);
             $room->save();
+            for($i=0; $i < count($users1); $i++) {
+                broadcast(new InviteEvent($room, $users1[$i]->user_id));
+            }
             $users1 = [...$users];
 
             for($i=0; $i < count($users1); $i++) {
-                // $rooms = [];
-
                 $user = User::find($users1[$i]['id']);
                 $user->myRooms()->attach($room->id);
                 broadcast(new InviteEvent($room, $user->id));
             }
+
         }
         return $room;
     }
 
     public function createRoom(Request $request) {  //room create
-        // return $request->users;
         $users =  $request->users;
-        // return $users;
-        // return gettype($users[0]['id']);
         $type = '';
         if (count($users) === 2) {
             $type = 'dm';
@@ -383,12 +336,13 @@ class ChatController extends Controller
                 ->where('rooms.type',$type)
                 ->where('room_user.user_id', $user->id)
                 ->whereIn('rooms.id', function ($query) use ($to_user_id) {return $query->select('room_id')->from('room_user')->where('user_id', $to_user_id)->get(); })->select('rooms.*')->get();
-            // return $chatroom[0]->id;
-            // DB::table('room_user')->where('room_id',$request->room['id'])->where('user_id',$request->user_id)->delete();
+
             try {
                 if($chatroom[0]){
                     DB::table('room_user')->where('room_id',$chatroom[0]->id)->where('user_id',$user->id)->update(['exists' => 0]);
+                    DB::table('room_user')->where('room_id',$chatroom[0]->id)->where('user_id',$to_user_id)->update(['exists' => 0]);
                 }
+                broadcast(new InviteEvent($chatroom[0], $to_user_id));
                 return $chatroom[0];
             }catch(Throwable $err) {
 
@@ -406,7 +360,7 @@ class ChatController extends Controller
         }
 
         for($i = 0; $i < count($users); $i++){
-            array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name'], 'position' => $users[$i]['position']));
+            array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name'], 'position' => $users[$i]['position'], 'country' => $users[$i]['country']));
         }
         $room->users = json_encode($users1);
         $room->type = $type;
@@ -416,14 +370,11 @@ class ChatController extends Controller
         for($i=0; $i < count($users); $i++) {
             // $rooms = [];
             $user = User::find($users[$i]['id']);
-            // if($user->rooms){
-            //     $rooms = json_decode($user->rooms);
-            // }
-            // array_push($rooms,$room->id);
-            // $user->rooms = json_encode($rooms);
-            // $user->save();
-            // return $user->rooms();
             $user->myRooms()->attach($room->id);
+            if($users[$i]['id'] != $users[count($users)-1]['id']) {
+                broadcast(new InviteEvent($room, $users[$i]['id']));
+            }
+
         }
 
 
