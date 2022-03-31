@@ -92,21 +92,26 @@ Route::post('/deletememo',[MemoController::class, 'DeleteMymemo']);
 // 그룹
 
 Route::get('/show/detail_group/{group_id}',[GroupController::class,'ShowGroupDetail']);
-Route::get('/show/group',[GroupController::class,'ShowGroup']);
-Route::get('/show/groupboard/{group_id}',[GroupController::class,'ShowGroupBoard']);
+Route::get('/show/group/{search}',[GroupController::class,'ShowGroup']);
 Route::get('/show/groupdata/{group_id}',[GroupController::class,'ShowGroupData']);
 Route::get('/show/groupcomment/{group_id}',[GroupController::class,'ShowGroupComment']);
 Route::get('/show/grouplike/{board_id}',[GroupController::class,'ShowGroupLike']);
 Route::get('/show/groupuser/{board_id}',[GroupController::class,'ShowGroupUser']);
 
-
+Route::post('/post/groupnotice',[GroupController::class,'PostGroupNotice']);
+Route::post('/show/groupboard/{group_id}',[GroupController::class,'ShowGroupBoard']);
+Route::post('/post/category',[GroupController::class,'PostCategory']);
+Route::post('/post/introimage',[GroupController::class.'PostIntroImage']);
+Route::post('/post/intro/',[GroupController::class,'PostGroupIntro']);
 Route::post('/post/groupuser/',[GroupController::class,'PostGroupUser']);
 Route::post('/delete/groupuser/',[GroupController::class,'DeleteGroupUser']);
+Route::post('/delete/dashgroupuser/{groupUser_id}',[GroupController::class,'DeleteDashGroupUser']);
 Route::post('/post/group',[GroupController::class,'PostGroup']);
 Route::post('/update/group',[GroupController::class,'UpdateGroup']);
 Route::post('/post/grouplike',[GroupController::class,'PostGroupLike']);
 Route::post('/delete/grouplike',[GroupController::class,'DeleteGroupLike']);
 Route::post('/update/groupcomment',[GroupController::class,'UpdateGroupComment']);
+Route::post('/update/groupuser',[GroupController::class,'UpdateGroupUser']);
 Route::post('/post/groupcomment',[GroupController::class,'PostGroupComment']);
 Route::post('/post/groupboard',[GroupController::class,'PostGroupBoard']);
 Route::post('/post/groupboardimage',[GroupController::class,'PostGroupBoardImage']);

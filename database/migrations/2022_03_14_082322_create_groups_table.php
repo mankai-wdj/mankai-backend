@@ -16,7 +16,7 @@ class CreateGroupsTable extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->string("intro")->nullable();
+            $table->longText("intro")->nullable();
             $table->string("logoImage")->nullable();
             $table->string("category")->nullable();
             $table->string("master")->nullable();
