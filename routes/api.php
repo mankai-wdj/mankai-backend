@@ -81,6 +81,8 @@ Route::get('/show/groupcomment/{group_id}',[GroupController::class,'ShowGroupCom
 Route::get('/show/grouplike/{board_id}',[GroupController::class,'ShowGroupLike']);
 Route::get('/show/groupuser/{board_id}',[GroupController::class,'ShowGroupUser']);
 
+
+Route::post('/show/groupnotice',[GroupController::class,'ShowGroupNotice']);
 Route::post('/post/groupnotice',[GroupController::class,'PostGroupNotice']);
 Route::post('/show/groupboard/{group_id}',[GroupController::class,'ShowGroupBoard']);
 Route::post('/post/category',[GroupController::class,'PostCategory']);

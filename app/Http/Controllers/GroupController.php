@@ -280,6 +280,13 @@ class GroupController extends Controller
 
 
     }
+    public function ShowGroupNotice(Request $request){
+        $notice = DB::table("group_notices")
+            ->where([["category","=",$request->category_id],["group_id","=",$request->group_id]])
+            ->get();
+
+        return $notice;
+    }
     public function PostGroupNotice(Request $request){
         $notice = new GroupNotice();
         $notice -> user_id = $request -> user_id;
