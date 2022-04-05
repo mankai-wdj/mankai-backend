@@ -280,9 +280,21 @@ class GroupController extends Controller
 
 
     }
+    public function DeleteGroupCategory(Request $request){
+        $category = GroupCategory::find($request->category_id);
+        $category -> delete();
+
+    }
+    public function UpdateGroupCategory(Request $request){
+        $category = GroupCategory::find($request->category_id);
+        $category -> title = $request->category_title;
+        $category -> save();
+    }
+
     public function ShowGroupNotice(Request $request){
         $notice = DB::table("group_notices")
             ->where([["category","=",$request->category_id],["group_id","=",$request->group_id]])
+            ->latest()
             ->get();
 
         return $notice;
@@ -296,6 +308,7 @@ class GroupController extends Controller
         $notice -> content = $request -> content;
 
         $notice -> save();
+
     }
 
     public function PostGroup(Request $request){
