@@ -6,8 +6,8 @@ use App\Http\Controllers\FollowController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\NotisController;
-use App\Http\Controllers\MessageMemoController;
-use App\Http\Controllers\MymemoController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,9 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('followings/{user_id}', [FollowController::class, 'getFollowings']);
 Route::get('follows/{id}', [FollowController::class, 'getFollows']);
 Route::get('memo/{id}', [MemoController::class, 'showMemos']);
-Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
+Route::post('user/follow', [FollowController::class, 'store'])->name('storeFollow');
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
 Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
 Route::post('/post/comment', [BoardController::class, "PostComment"]);
@@ -55,15 +56,18 @@ Route::post('/show/username/{user_id}', [BoardController::class, "ShowUserName"]
 Route::post('/update/comment', [BoardController::class, "UpdateComment"]);
 Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComment"]);
 Route::post('/post/like', [BoardController::class, "PostLike"]);
-Route::post('/show/like', [BoardController::class, "ShowLike"]);
+Route::get('/show/like/{board_id}', [BoardController::class, "ShowLike"]);
 Route::post('upload_post', [BoardController::class, "Store"]);
 Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
+Route::get('all_comments/{post_id}', [ImageController::class, 'allComments']);
+Route::get('/show/samplecomment/{board_id}', [BoardController::class, 'ShowSampleComment']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
 
 // MyPage-MyPosts (RU)
 Route::get('myposts/{user_id}', [BoardController::class, "showMyPosts"]);
-Route::post('myposts/{post_id}', [Boardcontroller::class, 'editMyPosts']);
+Route::post('myposts/{post_id}', [BoardController::class, 'editMyPosts']);
+Route::post('mypost/delete', [BoardController::class, 'deletePosts']);
 
 // MyPage-MyMemos(CRUD)
 Route::post('storememo/', [MemoController::class, "storePostMemo"]);
@@ -71,3 +75,36 @@ Route::post('deletememos/{post_id}', [MemoController::class, 'deletePostMemos'])
 
 Route::get('getmemoimages/{memo_id}', [MemoController::class, 'getMemoImages']);
 Route::post('updatememo', [MemoController::class, 'updateMemo']);
+
+// MyPage-YouUser
+Route::get('follow/{follow_id}', [FollowController::class, 'getFollow']);
+
+Route::post('profile', [UserController::class, 'update']);
+
+
+// 그룹
+
+Route::get('/show/detail_group/{group_id}', [GroupController::class, 'ShowGroupDetail']);
+Route::get('/show/group', [GroupController::class, 'ShowGroup']);
+Route::get('/show/groupboard/{group_id}', [GroupController::class, 'ShowGroupBoard']);
+Route::get('/show/groupdata/{group_id}', [GroupController::class, 'ShowGroupData']);
+Route::get('/show/groupcomment/{group_id}', [GroupController::class, 'ShowGroupComment']);
+Route::get('/show/grouplike/{board_id}', [GroupController::class, 'ShowGroupLike']);
+Route::get('/show/groupuser/{board_id}', [GroupController::class, 'ShowGroupUser']);
+Route::get('/show/group/{user_id}', [GroupController::class, 'ShowMyGroup']);
+
+
+Route::post('/post/intro/', [GroupController::class, 'PostGroupIntro']);
+Route::post('/post/groupuser/', [GroupController::class, 'PostGroupUser']);
+Route::post('/delete/groupuser/', [GroupController::class, 'DeleteGroupUser']);
+Route::post('/delete/dashgroupuser/{groupUser_id}', [GroupController::class, 'DeleteDashGroupUser']);
+Route::post('/post/group', [GroupController::class, 'PostGroup']);
+Route::post('/update/group', [GroupController::class, 'UpdateGroup']);
+Route::post('/post/grouplike', [GroupController::class, 'PostGroupLike']);
+Route::post('/delete/grouplike', [GroupController::class, 'DeleteGroupLike']);
+Route::post('/update/groupcomment', [GroupController::class, 'UpdateGroupComment']);
+Route::post('/update/groupuser', [GroupController::class, 'UpdateGroupUser']);
+Route::post('/post/groupcomment', [GroupController::class, 'PostGroupComment']);
+Route::post('/post/groupboard', [GroupController::class, 'PostGroupBoard']);
+Route::post('/post/groupboardimage', [GroupController::class, 'PostGroupBoardImage']);
+Route::post('/delete/groupcomment/{comment_id}', [GroupController::class, 'DeleteGroupComment']);
