@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -16,11 +17,12 @@ class CreateAllMemosTable extends Migration
         Schema::create('all_memos', function (Blueprint $table) {
             $table->id();
             $table->string('memo_title');
-            $table->foreignId('memo_user_id')
+            $table->foreignId('user_id')
                 ->constrained('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('content_text')->nullable();
+            $table->string('type')->nullable();
             $table->timestamps();
         });
     }

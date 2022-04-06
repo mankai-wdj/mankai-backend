@@ -21,13 +21,11 @@ class ImageController extends Controller
         $j = 0;
         while ($j < $i) {
             $image = FreeBoardImage::create([
-                // 'filename' => basename($path[$j]),
                 'url' => Storage::url($path[$j]),
                 'free_boards_id' => $request->post_id,
             ]);
             $j++;
         }
-        // 이제 Read/Update/Delete를 할 수 있게 하면된다.
         return $path;
     }
     public function show($post_id)
