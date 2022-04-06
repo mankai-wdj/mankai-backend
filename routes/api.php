@@ -51,6 +51,9 @@ Route::post('/postmymemo',[MymemoController::class,'storeMymemo']);
 Route::post('/editmymemo',[MymemoController::class,'editMymemo']);
 
 Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
+
+// Board Controller
+
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
 Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
 Route::post('/post/comment', [BoardController::class, "PostComment"]);
@@ -61,10 +64,13 @@ Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComm
 Route::post('/post/like', [BoardController::class, "PostLike"]);
 Route::get('/show/like/{board_id}', [BoardController::class, "ShowLike"]);
 Route::post('upload_post', [BoardController::class, "Store"]);
-Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
 Route::get('/show/samplecomment/{board_id}',[BoardController::class,'ShowSampleComment']);
+Route::get('/show/category/{user_id}',[BoardController::class,'ShowCategoryUser']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
+Route::post('/post/boardcategory',[BoardController::class,'PostBoardCategory']);
+
+Route::post('upload_image', [ImageController::class, 'Store']);
 
 
 Route::post('/post/memo',[MemoController::class,"PostMemo"]);
@@ -98,7 +104,8 @@ Route::get('/show/groupcomment/{group_id}',[GroupController::class,'ShowGroupCom
 Route::get('/show/grouplike/{board_id}',[GroupController::class,'ShowGroupLike']);
 Route::get('/show/groupuser/{board_id}',[GroupController::class,'ShowGroupUser']);
 
-
+Route::post('/update/category',[GroupController::class,'UpdateGroupCategory']);
+Route::post('/delete/groupcategory',[GroupController::class,'DeleteGroupCategory']);
 Route::post('/show/groupnotice',[GroupController::class,'ShowGroupNotice']);
 Route::post('/post/groupnotice',[GroupController::class,'PostGroupNotice']);
 Route::post('/show/groupboard/{group_id}',[GroupController::class,'ShowGroupBoard']);

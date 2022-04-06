@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\FreeBoard;
 use App\Models\FreeBoardLike;
 use App\Models\User;
+use App\Models\UserCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -34,7 +35,24 @@ class BoardController extends Controller
 
         return $free_board;
     }
+    public function ShowCategoryUser($user_id){
+        $category = DB::table("user_categories")->where("user_id","=",$user_id)->get();
+        return $category;
+    }
+    public function PostBoardCategory(Request $request){
+        $category = DB::table("user_categories")->where("user_id","=",$request->user_id)->delete();
 
+
+        $array = $request->data;
+        foreach($array as $data){
+            if($data != '전체'){
+                $category = new UserCategory();
+                $category -> user_id = $request->user_id;
+                $category -> name = $data;
+                $category -> save();
+            }
+        }
+    }
     public function BoardShow($category)
     {
         if ($category == "전체") {
