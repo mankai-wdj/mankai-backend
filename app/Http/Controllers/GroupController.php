@@ -299,6 +299,11 @@ class GroupController extends Controller
     }
 
     public function PostGroup(Request $request){
+
+        // $request->validate([
+        //     'name'=>'required|min:3|max:20'
+        // ])
+
         $group = new Group;
         $path = $request->file('img')->store('images','s3');
         $url = Storage::url($path);
@@ -309,7 +314,8 @@ class GroupController extends Controller
         $group->master = $request -> user_id;
         if($request -> password)
             $group->password = $request->password;
-
+        
+        
         $group->save();
 
 
