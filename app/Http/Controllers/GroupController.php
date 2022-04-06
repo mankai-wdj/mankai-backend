@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Group;
 use App\Models\GroupBoard;
 use App\Models\GroupBoardImage;
@@ -9,120 +10,131 @@ use App\Models\GroupComment;
 use App\Models\GroupUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class GroupController extends Controller
 {
-    public function PostGroupIntro(Request $request){
+    public function PostGroupIntro(Request $request)
+    {
         $group = GROUP::find($request->group_id);
-        $group -> intro = $request -> text;
-        $group -> save();
-
+        $group->intro = $request->text;
+        $group->save();
     }
-    public function PostGroupUser(Request $request){
+    public function PostGroupUser(Request $request)
+    {
         $groupuser = new GroupUser;
-        $groupuser -> group_id = $request -> group_id;
-        $groupuser -> user_id = $request -> user_id;
-        $groupuser -> position = "user";
-        $groupuser -> save();
+        $groupuser->group_id = $request->group_id;
+        $groupuser->user_id = $request->user_id;
+        $groupuser->position = "user";
+        $groupuser->save();
     }
-    public function DeleteGroupUser(Request $request){
+    public function DeleteGroupUser(Request $request)
+    {
         // 가입해지 버튼 눌렀을때임
         $groupuser = DB::table("group_users")
-            ->where([
-                ["group_id","=",$request->group_id],
-                ["user_id","=",$request->user_id]]
+            ->where(
+                [
+                    ["group_id", "=", $request->group_id],
+                    ["user_id", "=", $request->user_id]
+                ]
             );
-        $groupuser -> delete();
+        $groupuser->delete();
     }
-    public function DeleteDashGroupUser($groupUser_id){
+    public function DeleteDashGroupUser($groupUser_id)
+    {
         // 강제로 해지 시킬때임
         $groupUser = GroupUser::find($groupUser_id);
-        $group_id = $groupUser -> group_id;
-        $groupUser -> delete();
+        $group_id = $groupUser->group_id;
+        $groupUser->delete();
 
         $master = DB::table("group_users")
-            ->where("group_users.position","=","master")
-            ->where("group_id","=",$group_id)
-            ->join("users","users.id","=","group_users.user_id")
-            ->select("group_users.*","users.name")
+            ->where("group_users.position", "=", "master")
+            ->where("group_id", "=", $group_id)
+            ->join("users", "users.id", "=", "group_users.user_id")
+            ->select("group_users.*", "users.name")
             ->get();
 
         $user = DB::table("group_users")
-            ->where("group_users.position","=","user")
-            ->where("group_id","=",$group_id)
-            ->join("users","users.id","=","group_users.user_id")
-            ->select("group_users.*","users.name")
+            ->where("group_users.position", "=", "user")
+            ->where("group_id", "=", $group_id)
+            ->join("users", "users.id", "=", "group_users.user_id")
+            ->select("group_users.*", "users.name")
             ->get();
 
         $group = new GroupUser;
-        $group -> master = $master;
-        $group -> user = $user;
+        $group->master = $master;
+        $group->user = $user;
 
         return $group;
     }
-    public function ShowGroupUser($board_id){
+    public function ShowGroupUser($board_id)
+    {
         $group_users = DB::table('group_users')
-            ->where("group_id","=",$board_id)
-            ->join("users","users.id","=","group_users.user_id")
-            ->select("group_users.*","users.name")
+            ->where("group_id", "=", $board_id)
+            ->join("users", "users.id", "=", "group_users.user_id")
+            ->select("group_users.*", "users.name")
             ->get();
 
         return $group_users;
     }
-    public function ShowGroup(){
-        $groups=Group::all();
+    public function ShowGroup()
+    {
+        $groups = Group::all();
         return $groups;
     }
-    public function ShowGroupBoard($group_id){
+    public function ShowGroupBoard($group_id)
+    {
         $groups = DB::table('group_boards')
-            ->where("group_id","=",$group_id)
-            ->join("users","users.id","=","group_boards.user_id")
-            ->select("group_boards.*",'users.name')
+            ->where("group_id", "=", $group_id)
+            ->join("users", "users.id", "=", "group_boards.user_id")
+            ->select("group_boards.*", 'users.name')
             ->get();
 
         return $groups;
     }
-    public function PostGroupComment(Request $request){
+    public function PostGroupComment(Request $request)
+    {
         $comments = new GroupComment;
         $comments->group_board_id = $request->board_id;
         $comments->comment = $request->content;
         $comments->user_id = $request->user_id;
         $comments->save();
-
     }
-    public function UpdateGroupUser(Request $request){
+    public function UpdateGroupUser(Request $request)
+    {
         $groupUser = GroupUser::find($request->data);
-        if($groupUser -> position == "master")
-            $groupUser -> position = "user";
+        if ($groupUser->position == "master")
+            $groupUser->position = "user";
         else
-            $groupUser -> position = "master";
+            $groupUser->position = "master";
 
-        $groupUser -> save();
+        $groupUser->save();
 
         $master = DB::table("group_users")
-            ->where("group_users.position","=","master")
-            ->where("group_id","=",$groupUser->group_id)
-            ->join("users","users.id","=","group_users.user_id")
-            ->select("group_users.*","users.name")
+            ->where("group_users.position", "=", "master")
+            ->where("group_id", "=", $groupUser->group_id)
+            ->join("users", "users.id", "=", "group_users.user_id")
+            ->select("group_users.*", "users.name")
             ->get();
 
         $user = DB::table("group_users")
-            ->where("group_users.position","=","user")
-            ->where("group_id","=",$groupUser->group_id)
-            ->join("users","users.id","=","group_users.user_id")
-            ->select("group_users.*","users.name")
+            ->where("group_users.position", "=", "user")
+            ->where("group_id", "=", $groupUser->group_id)
+            ->join("users", "users.id", "=", "group_users.user_id")
+            ->select("group_users.*", "users.name")
             ->get();
 
 
 
         $group = new GroupUser;
-        $group -> master = $master;
-        $group -> user = $user;
+        $group->master = $master;
+        $group->user = $user;
 
         return $group;
     }
-    public function ShowGroupComment($group_id){
+    public function ShowGroupComment($group_id)
+    {
         $comments = DB::table("group_comments")
             ->where('group_board_id', '=', $group_id)
             ->join('users', 'group_comments.user_id', '=', 'users.id')
@@ -131,79 +143,83 @@ class GroupController extends Controller
             ->paginate(5);
         return $comments;
     }
-    public function PostGroupLike(Request $request){
+    public function PostGroupLike(Request $request)
+    {
         $like = new GroupBoardLike;
-        $like-> user_id = $request->user_id;
-        $like-> group_board_id = $request->board_id;
+        $like->user_id = $request->user_id;
+        $like->group_board_id = $request->board_id;
         $like->save();
 
         $likes = DB::table('group_board_likes')
-            ->where([["user_id","=",$request->user_id],["group_board_id","=",$request->board_id]])->get();
+            ->where([["user_id", "=", $request->user_id], ["group_board_id", "=", $request->board_id]])->get();
 
         return $likes;
     }
-    public function DeleteGroupLike(Request $request){
+    public function DeleteGroupLike(Request $request)
+    {
         $like = DB::table('group_board_likes')
-        ->where([
-            ["group_board_id","=",$request->board_id],
-            ["user_id","=",$request->user_id]
+            ->where([
+                ["group_board_id", "=", $request->board_id],
+                ["user_id", "=", $request->user_id]
             ])
-        ->delete();
+            ->delete();
 
         $likes = DB::table('group_board_likes')
-            ->where([["user_id","=",$request->user_id],["group_board_id","=",$request->board_id]])->get();
+            ->where([["user_id", "=", $request->user_id], ["group_board_id", "=", $request->board_id]])->get();
         return $likes;
-
     }
 
-    public function ShowGroupData($group_id){
+    public function ShowGroupData($group_id)
+    {
 
         // 이미지 가져오기
         $images = GroupBoardImage::where('group_board_id', $group_id)->get();
 
         // 좋아요 정보
         $board = DB::table("group_board_likes")
-        ->where("group_board_id", "=", $group_id)->get();
+            ->where("group_board_id", "=", $group_id)->get();
 
         // 코맨트 작업
-        $comments = DB::table('group_comments')->where("group_board_id","=",$group_id)->limit(3)->get();
+        $comments = DB::table('group_comments')->where("group_board_id", "=", $group_id)->limit(3)->get();
         $len = count($comments);
         // 코맨트 유저 닉네임 가져오기
-        for($i=0; $i<$len;$i++){
-            $count = DB::table('users')->where("id",'=',$comments[$i] -> user_id)->value("name");
-            $comments[$i]-> user_name = $count;
+        for ($i = 0; $i < $len; $i++) {
+            $count = DB::table('users')->where("id", '=', $comments[$i]->user_id)->value("name");
+            $comments[$i]->user_name = $count;
         }
 
         // 댓글 총 길이
-        $clen = DB::table('group_comments')->where("group_board_id","=",$group_id)->count();
+        $clen = DB::table('group_comments')->where("group_board_id", "=", $group_id)->count();
 
         // 임의 DB
         $array = new GroupBoardImage;
-        $array -> images = $images;
-        $array -> likes = $board;
-        $array -> comments = $comments;
-        $array -> comment_length = $clen;
+        $array->images = $images;
+        $array->likes = $board;
+        $array->comments = $comments;
+        $array->comment_length = $clen;
 
         return $array;
-
     }
-    public function UpdateGroupComment(Request $request){
+    public function UpdateGroupComment(Request $request)
+    {
         $comment = GroupComment::find($request->comment_id);
-        $comment-> comment = $request->updateText;
+        $comment->comment = $request->updateText;
         $comment->save();
-
     }
-    public function DeleteGroupComment($comment_id){
+    public function DeleteGroupComment($comment_id)
+    {
         $comment = GroupComment::find($comment_id);
         $comment->delete();
     }
-    public function ShowGroupLike($board_id){
+    public function ShowGroupLike($board_id)
+    {
         $board = DB::table("group_board_likes")
-        ->where("group_board_id", "=", $board_id)->get();
+            ->where("group_board_id", "=", $board_id)->get();
 
         return $board;
     }
-    public function PostGroupBoard(Request $request){
+    public function PostGroupBoard(Request $request)
+    {
         $request->validate([
             'selectedImages' => 'required_without:textfieldvalue',
             'textfieldvalue' => 'required_without:selectedImages'
@@ -220,7 +236,8 @@ class GroupController extends Controller
 
         return $group_board;
     }
-    public function PostGroupBoardImage(Request $request){
+    public function PostGroupBoardImage(Request $request)
+    {
 
 
         $i = 0;
@@ -232,58 +249,70 @@ class GroupController extends Controller
         $j = 0;
         while ($j < $i) {
             $image = new GroupBoardImage;
-            $image -> url = Storage::url($path[$j]);
-            $image -> group_board_id = $request ->post_id;
-            $image -> save();
+            $image->url = Storage::url($path[$j]);
+            $image->group_board_id = $request->post_id;
+            $image->save();
             $j++;
         }
         // 이제 Read/Update/Delete를 할 수 있게 하면된다.
         return $path;
     }
-    public function UpdateGroup(Request $request){
+    public function UpdateGroup(Request $request)
+    {
         $group = Group::find($request->group_id);
 
-        if($request -> file('img')){
-            $path = $request->file('img')->store('images','s3');
+        if ($request->file('img')) {
+            $path = $request->file('img')->store('images', 's3');
             $url = Storage::url($path);
-        }
-        else
+        } else
             $url = $request->img;
 
 
-        $group->logoImage=  $url;
+        $group->logoImage =  $url;
         $group->category = $request->category;
-        $group->name = $request -> text;
-        $group->master = $request -> user_id;
+        $group->name = $request->text;
+        $group->master = $request->user_id;
         $group->save();
-
-
     }
 
-    public function PostGroup(Request $request){
+    public function PostGroup(Request $request)
+    {
         $group = new Group;
-        $path = $request->file('img')->store('images','s3');
+        $path = $request->file('img')->store('images', 's3');
         $url = Storage::url($path);
 
-        $group->logoImage=  $url;
+        $group->logoImage = $url;
         $group->category = $request->category;
-        $group->name = $request -> text;
-        $group->master = $request -> user_id;
+        $group->name = $request->text;
+        $group->master = $request->user_id;
         $group->save();
 
 
         $group_user = new GroupUser;
-        $group_user -> group_id =  $group -> id;
-        $group_user -> user_id =  $request -> user_id;
-        $group_user -> position = "master";
-        $group_user -> save();
+        $group_user->group_id =  $group->id;
+        $group_user->user_id =  $request->user_id;
+        $group_user->position = "master";
+        $group_user->save();
 
         return $group->id;
     }
 
-    public function ShowGroupDetail($group_id){
+    public function ShowGroupDetail($group_id)
+    {
         $group = Group::find($group_id);
         return $group;
     }
 
+    public function ShowMyGroup($user_id)
+    {
+        $group_users = GroupUser::where('user_id', $user_id)->get();
+        $group_collection = collect();
+        foreach ($group_users as $group_user) {
+            $group = Group::where('id', $group_user->group_id)->get();
+            $group_collection->add($group[0]);
+            Log::info($group_collection);
+        }
+
+        return $group_collection;
+    }
 }

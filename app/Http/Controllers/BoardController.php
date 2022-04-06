@@ -93,8 +93,8 @@ class BoardController extends Controller
     }
     public function ShowLike($board_id)
     {
-            $board = DB::table("free_board_likes")
-                ->where("freeboard_id", "=", $board_id)->get();
+        $board = DB::table("free_board_likes")
+            ->where("freeboard_id", "=", $board_id)->get();
 
         return $board;
     }
@@ -108,19 +108,19 @@ class BoardController extends Controller
             ->paginate(5);
         return $comments;
     }
-    public function ShowSampleComment($board_id){
-        $comments = DB::table('comments')->where("freeboard_id","=",$board_id)->limit(3)->get();
+    public function ShowSampleComment($board_id)
+    {
+        $comments = DB::table('comments')->where("freeboard_id", "=", $board_id)->limit(3)->get();
         $len = count($comments);
-        $clen = DB::table('comments')->where("freeboard_id","=",$board_id)->count();
+        $clen = DB::table('comments')->where("freeboard_id", "=", $board_id)->count();
 
-        for($i=0; $i<$len;$i++){
-            $count = DB::table('users')->where("id",'=',$comments[$i] -> user_id)->value("name");
-            $comments[$i]-> user_name = $count;
-            $comments[$i] -> length = $clen;
+        for ($i = 0; $i < $len; $i++) {
+            $count = DB::table('users')->where("id", '=', $comments[$i]->user_id)->value("name");
+            $comments[$i]->user_name = $count;
+            $comments[$i]->length = $clen;
         }
 
         return $comments;
-
     }
 
     public function PostLike(Request $request)
@@ -131,7 +131,7 @@ class BoardController extends Controller
         $like->save();
 
         $likes = DB::table('free_board_likes')
-            ->where([["user_id","=",$request->user_id],["freeboard_id","=",$request->board_id]])->get();
+            ->where([["user_id", "=", $request->user_id], ["freeboard_id", "=", $request->board_id]])->get();
 
         return $likes;
     }
@@ -164,18 +164,27 @@ class BoardController extends Controller
             ->delete();
 
         $likes = DB::table('free_board_likes')
-            ->where([["user_id","=",$request->user_id],["freeboard_id","=",$request->board_id]])->get();
+            ->where([["user_id", "=", $request->user_id], ["freeboard_id", "=", $request->board_id]])->get();
 
 
         return $likes;
     }
+
+    public function deletePosts(Request $request)
+    {
+        $board = FreeBoard::find($request->boardId);
+        $board->delete();
+
+        return "나의 게시글 삭제완료";
+    }
+
     public function ShowPapago(Request $request)
     {
         $text = $request->text;
         $client_id = "W67VxGiecQuxoWQaqZ02"; // 네이버 개발자센터에서 발급받은 CLIENT ID
         $client_secret = "BxA1eiUXuT"; // 나중에 가릴것 ㅋㅋ
         $encText = urlencode($text);
-        $postvars = "query=".$encText;
+        $postvars = "query=" . $encText;
 
         $url = "https://openapi.naver.com/v1/papago/detectLangs";
         $is_post = true;
@@ -185,21 +194,21 @@ class BoardController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
         $headers = array();
-        $headers[] = "X-Naver-Client-Id: ".$client_id;
-        $headers[] = "X-Naver-Client-Secret: ".$client_secret;
+        $headers[] = "X-Naver-Client-Id: " . $client_id;
+        $headers[] = "X-Naver-Client-Secret: " . $client_secret;
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
         $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         $json = json_decode($response);
         if ($status_code == 200) {
-            $langCode = $json -> langCode;
+            $langCode = $json->langCode;
         } else {
             return $response;
         }
 
 
-        $postvars = "source=".$langCode."&target=ja&text=".$encText;
+        $postvars = "source=" . $langCode . "&target=ja&text=" . $encText;
         $url = "https://openapi.naver.com/v1/papago/n2mt";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -207,16 +216,13 @@ class BoardController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
         $headers = array();
-        $headers[] = "X-Naver-Client-Id: ".$client_id;
-        $headers[] = "X-Naver-Client-Secret: ".$client_secret;
+        $headers[] = "X-Naver-Client-Id: " . $client_id;
+        $headers[] = "X-Naver-Client-Secret: " . $client_secret;
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
         $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
         return $response;
-
     }
-
-
 }

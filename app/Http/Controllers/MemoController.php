@@ -15,9 +15,9 @@ class MemoController extends Controller
     public function storePostMemo(Request $request)
     {
         $memo = new AllMemo();
+        $memo->memo_title = $request->memo_title;
         $memo->user_id = $request->user_id;
         $memo->content_text = $request->content_text;
-        $memo->memo_title = $request->memo_title;
 
         $memo->save();
         // 모든 메모가 all_memos에 공통으로 저장하는 내용
