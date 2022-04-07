@@ -17,6 +17,7 @@ class CreateGroupsTable extends Migration
             $table->id();
             $table->string("name");
             $table->longText("intro")->nullable();
+            $table->longText("onelineintro")->nullable();
             $table->string("logoImage")->nullable();
             $table->string("category")->nullable();
             $table->string("master")->nullable();
