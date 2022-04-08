@@ -11,6 +11,7 @@ use App\Models\UserCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class BoardController extends Controller
 {
@@ -73,21 +74,23 @@ class BoardController extends Controller
 
         return $free_board;
     }
-    public function ShowCategoryUser($user_id){
-        $category = DB::table("user_categories")->where("user_id","=",$user_id)->get();
+    public function ShowCategoryUser($user_id)
+    {
+        $category = DB::table("user_categories")->where("user_id", "=", $user_id)->get();
         return $category;
     }
-    public function PostBoardCategory(Request $request){
-        $category = DB::table("user_categories")->where("user_id","=",$request->user_id)->delete();
+    public function PostBoardCategory(Request $request)
+    {
+        $category = DB::table("user_categories")->where("user_id", "=", $request->user_id)->delete();
 
 
         $array = $request->data;
-        foreach($array as $data){
-            if($data != '전체'){
+        foreach ($array as $data) {
+            if ($data != '전체') {
                 $category = new UserCategory();
-                $category -> user_id = $request->user_id;
-                $category -> name = $data;
-                $category -> save();
+                $category->user_id = $request->user_id;
+                $category->name = $data;
+                $category->save();
             }
         }
     }
@@ -242,5 +245,52 @@ class BoardController extends Controller
         curl_close($ch);
 
         return $response;
+    }
+
+    public function BoardUpdate(Request $request)
+    {
+        $post = FreeBoard::find($request->post_id)
+            ->update([
+                'content_text' => $request->content_text,
+            ]);
+        // ?! 해당게시글을 $request->post_id로 찾고
+        // ?! content_text를 수정
+
+        $images = FreeBoardImage::where('free_boards_id', $request->post_id);
+        $images->delete();
+        // ?! $reqeust->post_id에 해당하는 BoardImage삭제
+
+        $url_images = explode(',', $request->url_images);
+        if (strlen($url_images[0]) >= 1) {
+            for ($i = 0; $i < count($url_images); $i++) {
+                $url_image = new FreeBoardImage();
+                $url_image->free_boards_id = $request->post_id;
+                $url_image->url = $url_images[$i];
+                $url_image->save();
+            }
+        }
+
+        $j = 0;
+        while ($request->hasFile("file_images$j")) {
+            $path[$j] = $request->file("file_images$j")->store('image', 's3');
+            $j++;
+        }
+        $z = 0;
+        while ($z < $j) {
+            $file_images = new FreeBoardImage();
+            $file_images->url = Storage::url($path[$z]);
+            $file_images->free_boards_id = $request->post_id;
+            $file_images->save();
+            $z++;
+        }
+
+        return $request->all();
+    }
+
+    public function getUser($user_id)
+    {
+        $profile = User::find($user_id)->profile;
+
+        return $profile;
     }
 }

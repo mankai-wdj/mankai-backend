@@ -67,4 +67,11 @@ class ImageController extends Controller
 
         return $comments;
     }
+
+    public function ShowPostImages($post_id)
+    {
+        $images = FreeBoardImage::where('free_boards_id', $post_id)->get();
+
+        return $images;
+    }
 }

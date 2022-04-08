@@ -48,11 +48,13 @@ Route::get('followings/{user_id}', [FollowController::class, 'getFollowings']);
 Route::get('follows/{id}', [FollowController::class, 'getFollows']);
 Route::get('memo/{id}', [MemoController::class, 'showMemos']);
 Route::post('user/follow', [FollowController::class, 'store'])->name('storeFollow');
-
+Route::get('/getuserprofile/{user_id}', [BoardController::class, 'getUser']);
 
 
 // Board Controller
+Route::post('updatepost', [BoardController::class, "BoardUpdate"]);
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
+Route::get('/getpostimages/{post_id}', [ImageController::class, "ShowPostImages"]);
 Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
 Route::post('/post/comment', [BoardController::class, "PostComment"]);
 Route::post('/show/papago', [BoardController::class, "ShowPapago"]);
