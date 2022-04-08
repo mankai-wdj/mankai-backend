@@ -272,6 +272,8 @@ class GroupController extends Controller
         $group->category = $request->category;
         $group->name = $request -> text;
         $group->master = $request -> user_id;
+        $group->onelineintro = $request ->oneline;
+
         if($request->password)
             $group->password = $request -> password;
         else
