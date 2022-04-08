@@ -48,6 +48,10 @@ Route::get('followings/{user_id}', [FollowController::class, 'getFollowings']);
 Route::get('follows/{id}', [FollowController::class, 'getFollows']);
 Route::get('memo/{id}', [MemoController::class, 'showMemos']);
 Route::post('user/follow', [FollowController::class, 'store'])->name('storeFollow');
+
+
+
+// Board Controller
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
 Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
 Route::post('/post/comment', [BoardController::class, "PostComment"]);
@@ -58,12 +62,13 @@ Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComm
 Route::post('/post/like', [BoardController::class, "PostLike"]);
 Route::get('/show/like/{board_id}', [BoardController::class, "ShowLike"]);
 Route::post('upload_post', [BoardController::class, "Store"]);
-Route::post('upload_image', [ImageController::class, 'Store']);
 Route::get('upload_image/{post_id}', [ImageController::class, 'show']);
 Route::get('all_comments/{post_id}', [ImageController::class, 'allComments']);
 Route::get('/show/samplecomment/{board_id}', [BoardController::class, 'ShowSampleComment']);
+Route::get('/show/category/{user_id}', [BoardController::class, 'ShowCategoryUser']);
 Route::post('/delete/like', [BoardController::class, "DeleteLike"]);
-
+Route::post('/post/boardcategory', [BoardController::class, 'PostBoardCategory']);
+Route::post('upload_image', [ImageController::class, 'Store']);
 // MyPage-MyPosts (RU)
 Route::get('myposts/{user_id}', [BoardController::class, "showMyPosts"]);
 Route::post('myposts/{post_id}', [BoardController::class, 'editMyPosts']);
@@ -84,16 +89,21 @@ Route::post('profile', [UserController::class, 'update']);
 
 // 그룹
 
+Route::get('/show/group/{user_id}', [GroupController::class, 'ShowMyGroup']);
 Route::get('/show/detail_group/{group_id}', [GroupController::class, 'ShowGroupDetail']);
-Route::get('/show/group', [GroupController::class, 'ShowGroup']);
-Route::get('/show/groupboard/{group_id}', [GroupController::class, 'ShowGroupBoard']);
+Route::get('/show/group/{search}', [GroupController::class, 'ShowGroup']);
 Route::get('/show/groupdata/{group_id}', [GroupController::class, 'ShowGroupData']);
 Route::get('/show/groupcomment/{group_id}', [GroupController::class, 'ShowGroupComment']);
 Route::get('/show/grouplike/{board_id}', [GroupController::class, 'ShowGroupLike']);
 Route::get('/show/groupuser/{board_id}', [GroupController::class, 'ShowGroupUser']);
-Route::get('/show/group/{user_id}', [GroupController::class, 'ShowMyGroup']);
 
-
+Route::post('/update/category', [GroupController::class, 'UpdateGroupCategory']);
+Route::post('/delete/groupcategory', [GroupController::class, 'DeleteGroupCategory']);
+Route::post('/show/groupnotice', [GroupController::class, 'ShowGroupNotice']);
+Route::post('/post/groupnotice', [GroupController::class, 'PostGroupNotice']);
+Route::post('/show/groupboard/{group_id}', [GroupController::class, 'ShowGroupBoard']);
+Route::post('/post/category', [GroupController::class, 'PostCategory']);
+Route::post('/post/introimage', [GroupController::class . 'PostIntroImage']);
 Route::post('/post/intro/', [GroupController::class, 'PostGroupIntro']);
 Route::post('/post/groupuser/', [GroupController::class, 'PostGroupUser']);
 Route::post('/delete/groupuser/', [GroupController::class, 'DeleteGroupUser']);

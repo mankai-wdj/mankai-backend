@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -17,6 +18,7 @@ class CreateGroupBoardsTable extends Migration
             $table->id();
             $table->foreignId("group_id");
             $table->foreignId("user_id");
+            $table->String("category");
             $table->string("content_text");
             $table->timestamps();
         });
