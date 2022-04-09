@@ -89,9 +89,11 @@ class GroupController extends Controller
 
     public function ShowGroup($search)
     {
-        if ($search == "NULLDATA")
+        Log::info($search);
+        if ($search == "NULLDATA") {
+            Log::info("검색 안했을 때 케이스");
             $groups = Group::all();
-        else
+        } else
             $groups = DB::table("groups")->where("name", "like", "%" . $search . "%")->get();
 
         for ($i = 0; $i < count($groups); $i++) {
@@ -291,6 +293,8 @@ class GroupController extends Controller
 
         $group->name = $request->text;
         $group->master = $request->user_id;
+        $group->onelineintro = $request->oneline;
+
         if ($request->password)
             $group->password = $request->password;
         else
@@ -330,8 +334,14 @@ class GroupController extends Controller
         $notice->save();
     }
 
+
     public function PostGroup(Request $request)
     {
+
+        // $request->validate([
+        //     'name'=>'required|min:3|max:20'
+        // ])
+
         $group = new Group;
         $path = $request->file('img')->store('images', 's3');
         $url = Storage::url($path);
@@ -341,8 +351,10 @@ class GroupController extends Controller
 
         $group->name = $request->text;
         $group->master = $request->user_id;
+        $group->onelineintro = $request->oneline;
         if ($request->password)
             $group->password = $request->password;
+
 
         $group->save();
 
@@ -386,7 +398,6 @@ class GroupController extends Controller
         foreach ($group_users as $group_user) {
             $group = Group::where('id', $group_user->group_id)->get();
             $group_collection->add($group[0]);
-            Log::info($group_collection);
         }
 
         return $group_collection;

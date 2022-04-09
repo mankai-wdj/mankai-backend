@@ -23,11 +23,27 @@ class MemoController extends Controller
         $memo->save();
         // 모든 메모가 all_memos에 공통으로 저장하는 내용
 
+        if ($request->groupboard_memo_id != null) {
+            $groupBoardImages = DB::table('group_board_images')
+                ->where('group_board_id', $request->groupboard_memo_id)
+                ->get();
+
+            foreach ($groupBoardImages as $groupBoardImage) {
+                $memoImages = new MemoImage();
+                $memoImages->url = $groupBoardImage->url;
+                $memoImages->memo_id = $memo->id;
+                $memoImages->save();
+            }
+        }
+
+
 
         if ($request->post_memo_id != null) {
             $images = DB::table('free_board_images')
                 ->where('free_boards_id', $request->post_memo_id)
                 ->get();
+
+
 
             foreach ($images as $image) {
                 $memoImages = new MemoImage();
