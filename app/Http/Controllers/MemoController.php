@@ -66,4 +66,11 @@ class MemoController extends Controller
     }
     //Memo-Memo-Delete(공통)
 
+    public function getMemoImages($memo_id)
+    {
+        Log::info($memo_id);
+        $images = MemoImage::where('memo_id', $memo_id)->get();
+        return $images;
+    }
+
 }

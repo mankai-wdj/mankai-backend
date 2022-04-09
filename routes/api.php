@@ -71,3 +71,5 @@ Route::post('/translate/text', [TranslationController::class, 'translation']);  
 Route::post('/storememo', [MemoController::class, 'storePostMemo']);
 
 Route::get('room/find/{id}' ,[ChatController::class,'getChatRoomById']); // room id로 찾기
+
+Route::get('getmemoimages/{memo_id}', [MemoController::class, 'getMemoImages']);

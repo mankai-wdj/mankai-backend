@@ -11,9 +11,7 @@ class Message extends Model
     protected $fillable = [
         'message',
         'room_id',
-        'file',
-        'memos',
-        'group',
+        'type',
         'read_users'
     ];
     public function user() {
