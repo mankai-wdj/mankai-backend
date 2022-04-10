@@ -36,6 +36,8 @@ class User extends Authenticatable
 
         });
     }
+    // protected $with = ['myMemos'];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -62,15 +64,22 @@ class User extends Authenticatable
         return $this->belongsToMany(Room::class);
     }
 
-    public function myMemos() {
-        return $this->hasMany(AllMemo::class);
-    }
-
-    public function following() {
-        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followed_id');
-    }
-
     public function followers() {
         return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');
       }
+
+    public function myMemos()
+    {
+        return $this->hasMany(AllMemo::class);
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followed_id');
+    }
+
+    public function followed()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');
+    }
 }

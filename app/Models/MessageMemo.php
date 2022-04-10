@@ -5,18 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AllMemo extends Model
+class MessageMemo extends Model
 {
     use HasFactory;
-
     protected $fillable = [
-        'memo_title',
-        'user_id',
-        'content_text',
+        'message',
+        'room_id',
+        'file',
     ];
-
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
     }
 }

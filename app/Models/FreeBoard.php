@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AllMemo extends Model
+class FreeBoard extends Model
 {
-    use HasFactory;
 
     protected $fillable = [
         'memo_title',
@@ -15,8 +14,6 @@ class AllMemo extends Model
         'content_text',
     ];
 
-    public function users()
-    {
-        return $this->belongsTo(User::class);
-    }
+
+    use HasFactory;
 }
