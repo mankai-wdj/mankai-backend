@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use App\Models\Group;
@@ -295,10 +296,11 @@ class GroupController extends Controller
         $group->master = $request->user_id;
         $group->onelineintro = $request->oneline;
 
-        if ($request->password)
-            $group->password = $request->password;
+        if ($request -> password)
+            $group-> password = $request -> password;
         else
-            $group->password = null;
+            $group-> password = null;
+
         $group->save();
     }
     public function DeleteGroupCategory(Request $request)
@@ -343,8 +345,12 @@ class GroupController extends Controller
         // ])
 
         $group = new Group;
-        $path = $request->file('img')->store('images', 's3');
-        $url = Storage::url($path);
+        if($request->file('img')){
+            $path = $request->file('img')->store('images', 's3');
+            $url = Storage::url($path);
+        }
+        else
+            $url = "https://mankai-bucket.s3-ap-northeast-2.amazonaws.com/images/EjqTKgV5GU3U5cTOuUEGIg6303oAiz2Kfl5vS871.jpg";
 
         $group->logoImage = $url;
         $group->category = $request->category;
@@ -352,9 +358,11 @@ class GroupController extends Controller
         $group->name = $request->text;
         $group->master = $request->user_id;
         $group->onelineintro = $request->oneline;
+
         if ($request->password)
             $group->password = $request->password;
-
+        else
+            $group->password = null;
 
         $group->save();
 
