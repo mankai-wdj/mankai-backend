@@ -300,7 +300,7 @@ class ChatController extends Controller
             $room = new Room();
 
             for($i = 0; $i < count($users); $i++){
-                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name'], 'country' => $users[$i]['country']));
+                array_push($users1, (object)array('user_id'=>$users[$i]['id'], 'user_name'=>$users[$i]['name'], 'position' => $users[$i]['position'], 'country' => $users[$i]['country']));
             }
             $room->users = json_encode($users1);
             $room->type = "group";
