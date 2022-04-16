@@ -45,19 +45,19 @@ class ChatController extends Controller
         $trans = new TranslationController;
         $lang = $trans->searchLanguage($request->message);
         $tran = '';
-        if($request->user_id == 5) { // user_id 5 는 일본어 통역봇
+        if($request->user_id == 3) { // user_id 5 는 일본어 통역봇
             if($lang == 'ja') {
                 return ;
             }else {
                 $tran = 'ja';
             }
-        }else if($request->user_id == 6) { // user_id 6 은 영어 통역봇
+        }else if($request->user_id == 5) { // user_id 6 은 영어 통역봇
             if($lang == 'en') {
                 return ;
             }else {
                 $tran = 'en';
             }
-        }else if($request->user_id == 7) { // user_id 7 은 한국어 통역봇
+        }else if($request->user_id == 4) { // user_id 7 은 한국어 통역봇
             if($lang == 'ko') {
                 return ;
             }else {
