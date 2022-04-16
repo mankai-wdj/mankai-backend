@@ -170,3 +170,8 @@ Route::post('/post/groupcomment', [GroupController::class, 'PostGroupComment']);
 Route::post('/post/groupboard', [GroupController::class, 'PostGroupBoard']);
 Route::post('/post/groupboardimage', [GroupController::class, 'PostGroupBoardImage']);
 Route::post('/delete/groupcomment/{comment_id}', [GroupController::class, 'DeleteGroupComment']);
+
+
+//알림
+
+Route::post('/fcm/message', [NotisController::class, 'messageNoti']);
