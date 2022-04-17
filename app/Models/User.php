@@ -24,8 +24,6 @@ class User extends Authenticatable
         'password',
     ];
 
-    // protected $with = ['myMemos'];
-
     protected static function boot()
     {
 
@@ -58,10 +56,7 @@ class User extends Authenticatable
     ];
 
 
-    public function followed()
-    {
-        return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');
-    }
+
     public function messages()
     {
         return $this->hasMany(Message::class);
@@ -72,6 +67,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Room::class);
     }
 
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');
+    }
+
     public function myMemos()
     {
         return $this->hasMany(AllMemo::class);
@@ -80,10 +80,5 @@ class User extends Authenticatable
     public function following()
     {
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followed_id');
-    }
-
-    public function followers()
-    {
-        return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');
     }
 }

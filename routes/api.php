@@ -3,9 +3,9 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\FollowController;
-use App\Http\Controllers\ImageController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\NotisController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MymemoController;
@@ -58,12 +58,28 @@ Route::get('sidebar/{id}', [ChatController::class, 'sidebarData']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('followings/{user_id}', [FollowController::class, 'getFollowings']);
-Route::get('follows/{id}', [FollowController::class, 'getFollows']);
+Route::get('followers/{user_id}', [FollowController::class, 'getFollowers']);
 Route::get('memo/{id}', [MemoController::class, 'showMemos']);
 Route::post('user/follow', [FollowController::class, 'store'])->name('storeFollow');
 Route::get('/getuserprofile/{user_id}', [BoardController::class, 'getUser']);
 
+Route::get('messages/{id}/{userId}', [ChatController::class, 'getMessages'])->name('messages'); // room messages 가져오기
+
+Route::get('rooms/{id}', [ChatController::class, 'getRooms'])->name('rooms'); // rooms 가져오기
+
+Route::post('room/create', [ChatController::class, 'createRoom'])->name('createRoom'); // room create
+
+Route::post('message/send', [ChatController::class, 'messageSend'])->name('sendMessage');  //message post
+
+Route::post('messageBot/send', [ChatController::class, 'sendMessageBot'])->name('sendMessageBot');  //message post
+
+Route::post('room/check', [ChatController::class, 'deleteRoom'])->name('deleteRoom'); // room 있는지 없는지 확인
+
+Route::post('user/invite', [ChatController::class, 'inviteUser'])->name('userInvite'); // user 초대
+
+Route::post('/translate/text', [TranslationController::class, 'translation']);  // translation
+
+Route::get('room/find/{id}', [ChatController::class, 'getChatRoomById']); // room id로 찾기
 
 // Board Controller
 Route::post('updatepost', [BoardController::class, "BoardUpdate"]);
@@ -143,20 +159,8 @@ Route::post('/post/groupcomment', [GroupController::class, 'PostGroupComment']);
 Route::post('/post/groupboard', [GroupController::class, 'PostGroupBoard']);
 Route::post('/post/groupboardimage', [GroupController::class, 'PostGroupBoardImage']);
 Route::post('/delete/groupcomment/{comment_id}', [GroupController::class, 'DeleteGroupComment']);
-Route::get('messages/{id}/{userId}', [ChatController::class, 'getMessages'])->name('messages'); // room messages 가져오기
 
-Route::get('rooms/{id}', [ChatController::class, 'getRooms'])->name('rooms'); // rooms 가져오기
 
-Route::post('room/create', [ChatController::class, 'createRoom'])->name('createRoom'); // room create
+//알림
 
-Route::post('message/send', [ChatController::class, 'messageSend'])->name('sendMessage');  //message post
-
-Route::post('messageBot/send', [ChatController::class, 'sendMessageBot'])->name('sendMessageBot');  //message post
-
-Route::post('room/check', [ChatController::class, 'deleteRoom'])->name('deleteRoom'); // room 있는지 없는지 확인
-
-Route::post('user/invite', [ChatController::class, 'inviteUser'])->name('userInvite'); // user 초대
-
-Route::post('/translate/text', [TranslationController::class, 'translation']);  // translation
-
-Route::get('room/find/{id}', [ChatController::class, 'getChatRoomById']); // room id로 찾기
+Route::post('/fcm/message', [NotisController::class, 'messageNoti']);

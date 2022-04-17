@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Ui\Presets\React;
 use PhpParser\Node\Expr\FuncCall;
 use SebastianBergmann\Environment\Console;
@@ -48,19 +49,19 @@ class ChatController extends Controller
         $trans = new TranslationController;
         $lang = $trans->searchLanguage($request->message);
         $tran = '';
-        if ($request->user_id == 5) { // user_id 5 는 일본어 통역봇
+        if ($request->user_id == 3) { // user_id 5 는 일본어 통역봇
             if ($lang == 'ja') {
                 return;
             } else {
                 $tran = 'ja';
             }
-        } else if ($request->user_id == 6) { // user_id 6 은 영어 통역봇
+        } else if ($request->user_id == 5) { // user_id 6 은 영어 통역봇
             if ($lang == 'en') {
                 return;
             } else {
                 $tran = 'en';
             }
-        } else if ($request->user_id == 7) { // user_id 7 은 한국어 통역봇
+        } else if ($request->user_id == 4) { // user_id 7 은 한국어 통역봇
             if ($lang == 'ko') {
                 return;
             } else {
@@ -120,6 +121,7 @@ class ChatController extends Controller
         }
 
         $room = Room::find($request->room_id);
+
         if ($request->type == 'file' && $request->hasFile('file')) {
             if (is_array($request->file('file'))) {
                 for ($i = 0; $i < count($request->file('file')); $i++) {
@@ -127,15 +129,15 @@ class ChatController extends Controller
 
                     if ($fileType[0] == 'image') {
                         $fileName = time() . '_' . $request->file('file')[$i]->getClientOriginalName();
-                        $request->file('file')[$i]->storeAs('/public/images/' . $request->room_id . '/' . date('Y-m-d') . '/', $fileName);
-                        $file_path = 'images/' . $request->room_id . '/' . date('Y-m-d') . '/' . $fileName;
+                        $file_path = $request->file('file')[$i]->storeAs('images/' . $request->room_id . '/' . date('Y-m-d'), $fileName, 's3');
+                        $file_path = Storage::url($file_path);
                         array_push($images, $file_path);
                     } else {
                         $fileName = time() . '_' . $request->file('file')[$i]->getClientOriginalName();
-                        $request->file('file')[$i]->storeAs('/public/files/' . $request->room_id . '/' . date('Y-m-d') . '/', $fileName);
+                        $path = $request->file('file')[$i]->storeAs('files/' . $request->room_id . '/' . date('Y-m-d'), $fileName, 's3');
                         $file_path = [];
 
-                        array_push($file_path, (object)array('path' => 'files/' . $request->room_id . '/' . date('Y-m-d') . '/' . $fileName, 'size' => $request->file('file')[$i]->getSize(), 'name' => $request->file('file')[$i]->getClientOriginalName(), 'type' => explode(".", $request->file('file')[$i]->getClientOriginalName())[count(explode(".", $request->file('file')[$i]->getClientOriginalName())) - 1]));
+                        array_push($file_path, (object)array('path' => Storage::url($path), 'size' => $request->file('file')[$i]->getSize(), 'name' => $request->file('file')[$i]->getClientOriginalName(), 'type' => explode(".", $request->file('file')[$i]->getClientOriginalName())[count(explode(".", $request->file('file')[$i]->getClientOriginalName())) - 1]));
                         $file_path = json_encode($file_path);
 
                         $message = $user->messages()->create([
@@ -175,13 +177,13 @@ class ChatController extends Controller
                 if ($fileType[0] == 'image') {
                     $request->file('file');
                     $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
-                    $request->file('file')->storeAs('/public/images/' . $request->room_id . '/' . date('Y-m-d') . '/', $fileName);
-                    $file_path = 'images/' . $request->room_id . '/' . date('Y-m-d') . '/' . $fileName;
+                    $file_path = $request->file('file')->storeAs('images/' . $request->room_id . '/' . date('Y-m-d'), $fileName, 's3');
+                    $file_path = Storage::url($file_path);
                 } else {
                     $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
-                    $request->file('file')->storeAs('/public/files/' . $request->room_id . '/' . date('Y-m-d') . '/', $fileName);
+                    $path = $request->file('file')->storeAs('files/' . $request->room_id . '/' . date('Y-m-d'), $fileName, 's3');
                     $file_path = [];
-                    array_push($file_path, (object)array('path' => 'files/' . $request->room_id . '/' . date('Y-m-d') . '/' . $fileName, 'size' => $request->file('file')->getSize(), 'name' => $request->file('file')->getClientOriginalName(), 'type' => explode(".", $request->file('file')->getClientOriginalName())[count(explode(".", $request->file('file')->getClientOriginalName())) - 1]));
+                    array_push($file_path, (object)array('path' => Storage::url($path), 'size' => $request->file('file')->getSize(), 'name' => $request->file('file')->getClientOriginalName(), 'type' => explode(".", $request->file('file')->getClientOriginalName())[count(explode(".", $request->file('file')->getClientOriginalName())) - 1]));
                     $file_path = json_encode($file_path);
                 }
                 $message = $user->messages()->create([
@@ -303,7 +305,7 @@ class ChatController extends Controller
             $room = new Room();
 
             for ($i = 0; $i < count($users); $i++) {
-                array_push($users1, (object)array('user_id' => $users[$i]['id'], 'user_name' => $users[$i]['name'], 'country' => $users[$i]['country']));
+                array_push($users1, (object)array('user_id' => $users[$i]['id'], 'user_name' => $users[$i]['name'], 'position' => $users[$i]['position'], 'country' => $users[$i]['country']));
             }
             $room->users = json_encode($users1);
             $room->type = "group";

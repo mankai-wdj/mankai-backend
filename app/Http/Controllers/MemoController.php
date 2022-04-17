@@ -70,7 +70,7 @@ class MemoController extends Controller
                 $j++;
             }
         }
-        // mymemo에서 메모생성시의 이미지들을 memo_images에 저장한다. 이게 되어야 한다. 
+        // mymemo에서 메모생성시의 이미지들을 memo_images에 저장한다. 이게 되어야 한다.
 
 
         return $memo;
