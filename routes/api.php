@@ -136,6 +136,7 @@ Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
 // Route::post('/post/like', [BoardController::class, "PostLike"]);
 // Route::post('/show/like', [BoardController::class, "ShowLike"]);
 
+Route::post('video/filesave', [VideoController::class , 'videoChatFileSave']);
 
 
 // 그룹
