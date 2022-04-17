@@ -1,11 +1,10 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGroupBoardsTable extends Migration
+class CreateMessagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,12 +13,12 @@ class CreateGroupBoardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_boards', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("group_id");
-            $table->foreignId("user_id");
-            $table->String("category");
-            $table->string("content_text");
+            $table->integer('user_id')->unsigned();
+            $table->integer('room_id')->unsigned();
+            $table->text('message')->nullable();
+            $table->string('file')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateGroupBoardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('group_boards');
+        Schema::dropIfExists('messages');
     }
 }

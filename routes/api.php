@@ -9,6 +9,9 @@ use App\Http\Controllers\NotisController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MymemoController;
+use App\Http\Controllers\ChatController;
+
+use App\Http\Controllers\TranslationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('test/{id}', [ChatController::class, 'test']);
 
 Route::post('register', [AuthController::class, 'register']);
 
@@ -41,6 +46,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('admin/getuser', [AuthController::class, 'getUsers']);
 });
+
+Route::post('user/follow', [FollowController::class, 'store'])->name('storeFollow'); //follow 저장
+
+Route::get('follows/{id}', [FollowController::class, 'getFollows']);
+
+Route::get('memo/{id}', [MemoController::class, 'showMemos']);
+
+Route::get('sidebar/{id}', [ChatController::class, 'sidebarData']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -96,18 +109,6 @@ Route::get('/show/memos/{memo_id}', [MemoController::class, 'editMemoView']);
 //내 메모 수정 할때 수정 페이지에 기존 내용을 표시해주는 것
 Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
 
-// Route::get('/show/like', [BoardController::class, "ShowLike"]);
-// Route::post('user/follow', [FollowsController::class, 'store'])->name('storeFollow');
-// Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
-// Route::post('/show/comment/{board_id}', [BoardController::class, "ShowComment"]);
-// Route::post('/post/comment', [BoardController::class, "PostComment"]);
-// Route::post('/show/papago', [BoardController::class, "ShowPapago"]);
-// Route::post('/show/username/{user_id}', [BoardController::class, "ShowUserName"]);
-// Route::post('/update/comment', [BoardController::class, "UpdateComment"]);
-// Route::post('/delete/comment/{comment_id}', [BoardController::class, "DeleteComment"]);
-// Route::post('/post/like', [BoardController::class, "PostLike"]);
-// Route::post('/show/like', [BoardController::class, "ShowLike"]);
-
 
 
 // 그룹
@@ -142,3 +143,20 @@ Route::post('/post/groupcomment', [GroupController::class, 'PostGroupComment']);
 Route::post('/post/groupboard', [GroupController::class, 'PostGroupBoard']);
 Route::post('/post/groupboardimage', [GroupController::class, 'PostGroupBoardImage']);
 Route::post('/delete/groupcomment/{comment_id}', [GroupController::class, 'DeleteGroupComment']);
+Route::get('messages/{id}/{userId}', [ChatController::class, 'getMessages'])->name('messages'); // room messages 가져오기
+
+Route::get('rooms/{id}', [ChatController::class, 'getRooms'])->name('rooms'); // rooms 가져오기
+
+Route::post('room/create', [ChatController::class, 'createRoom'])->name('createRoom'); // room create
+
+Route::post('message/send', [ChatController::class, 'messageSend'])->name('sendMessage');  //message post
+
+Route::post('messageBot/send', [ChatController::class, 'sendMessageBot'])->name('sendMessageBot');  //message post
+
+Route::post('room/check', [ChatController::class, 'deleteRoom'])->name('deleteRoom'); // room 있는지 없는지 확인
+
+Route::post('user/invite', [ChatController::class, 'inviteUser'])->name('userInvite'); // user 초대
+
+Route::post('/translate/text', [TranslationController::class, 'translation']);  // translation
+
+Route::get('room/find/{id}', [ChatController::class, 'getChatRoomById']); // room id로 찾기

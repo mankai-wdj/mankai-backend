@@ -18,7 +18,7 @@ class NotiFactory extends Factory
             'noti_title' => $this->faker->title(),
             'noti_message' =>Str::random(20),
             'noti_link' => $this->faker->name(),
-            'user_id' => 3
+            'user_id' => 1
         ];
     }
 }
