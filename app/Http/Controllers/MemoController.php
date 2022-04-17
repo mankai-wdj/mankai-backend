@@ -129,7 +129,6 @@ class MemoController extends Controller
         return "이미지 업데이트 성공";
     }
 
-
     public function deletePostMemos($id)
     {
 
