@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Ui\Presets\React;
 use PhpParser\Node\Expr\FuncCall;
 use SebastianBergmann\Environment\Console;
@@ -115,6 +116,7 @@ class ChatController extends Controller
         }
 
         $room = Room::find($request->room_id);
+
         if ($request->type == 'file' && $request->hasFile('file')) {
             if(is_array($request->file('file'))) {
                 for($i = 0; $i < count($request->file('file')); $i++){
@@ -122,15 +124,15 @@ class ChatController extends Controller
 
                     if($fileType[0] == 'image'){
                         $fileName = time() . '_' . $request->file('file')[$i]->getClientOriginalName();
-                        $request->file('file')[$i]->storeAs('/public/images/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
-                        $file_path ='images/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
+                        $file_path = $request->file('file')[$i]->storeAs('images/'.$request->room_id.'/'.date('Y-m-d'), $fileName, 's3');
+                        $file_path = Storage::url($file_path);
                         array_push($images, $file_path);
                     }else {
                         $fileName = time() . '_' . $request->file('file')[$i]->getClientOriginalName();
-                        $request->file('file')[$i]->storeAs('/public/files/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
+                        $path = $request->file('file')[$i]->storeAs('files/'.$request->room_id.'/'.date('Y-m-d'), $fileName, 's3');
                         $file_path = [];
 
-                        array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'size' =>$request->file('file')[$i]->getSize() , 'name' =>$request->file('file')[$i]->getClientOriginalName() , 'type'=>explode(".",$request->file('file')[$i]->getClientOriginalName())[count(explode(".",$request->file('file')[$i]->getClientOriginalName()))-1]));
+                        array_push($file_path, (object)array('path'=>Storage::url($path), 'size' =>$request->file('file')[$i]->getSize() , 'name' =>$request->file('file')[$i]->getClientOriginalName() , 'type'=>explode(".",$request->file('file')[$i]->getClientOriginalName())[count(explode(".",$request->file('file')[$i]->getClientOriginalName()))-1]));
                         $file_path = json_encode($file_path);
 
                         $message = $user->messages()->create([
@@ -172,13 +174,13 @@ class ChatController extends Controller
                 if($fileType[0] == 'image') {
                     $request->file('file');
                     $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
-                    $request->file('file')->storeAs('/public/images/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
-                    $file_path ='images/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName ;
+                    $file_path = $request->file('file')->storeAs('images/'.$request->room_id.'/'.date('Y-m-d'), $fileName, 's3');
+                    $file_path = Storage::url($file_path);
                 }else {
                     $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
-                    $request->file('file')->storeAs('/public/files/'.$request->room_id.'/'.date('Y-m-d').'/', $fileName);
+                    $path = $request->file('file')->storeAs('files/'.$request->room_id.'/'.date('Y-m-d'), $fileName, 's3');
                     $file_path = [];
-                    array_push($file_path, (object)array('path'=>'files/'.$request->room_id.'/'.date('Y-m-d').'/'.$fileName, 'size' =>$request->file('file')->getSize(), 'name' =>$request->file('file')->getClientOriginalName(), 'type'=>explode(".",$request->file('file')->getClientOriginalName())[count(explode(".",$request->file('file')->getClientOriginalName()))-1]));
+                    array_push($file_path, (object)array('path'=>Storage::url($path), 'size' =>$request->file('file')->getSize(), 'name' =>$request->file('file')->getClientOriginalName(), 'type'=>explode(".",$request->file('file')->getClientOriginalName())[count(explode(".",$request->file('file')->getClientOriginalName()))-1]));
                     $file_path = json_encode($file_path);
 
                 }
