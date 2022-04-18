@@ -42,7 +42,6 @@ return [
                 'port' => 6001,
                 'scheme' => 'https'
             ],
-
         ],
 
         'ably' => [
