@@ -38,9 +38,9 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'encrypted' => true,
-                'host' => env('APP_URL'),
+                'host' => "api.mankai.shop",
                 'port' => 6001,
-                'scheme' => env('PUSHER_SCHEME'),
+                'scheme' => "http",
                 'useTLS' => true,
                 'curl_options' => [
                     CURLOPT_SSL_VERIFYHOST => 0,
