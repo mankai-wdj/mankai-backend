@@ -22,7 +22,8 @@ class Cors
         if (in_array($httpOrigin, [
             // 여기 Array에 허용하려는 IP 또는 DOMAIN을 추가하면 된다.
             'http://localhost:3000', // Dev Client Server using CORS
-            'http://mankai.shop', // Prod Client Server using CORS
+            'http://mankai.shop',
+            'https://mankai.shop', // Prod Client Server using CORS
         ]))
         header("Access-Control-Allow-Origin: ${httpOrigin}");
         header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
