@@ -21,16 +21,16 @@ class FollowController extends Controller
 
     public function getFollows($id)
     {
-        $followers = User::find($id)->following()->get();
-
-        return $followers;
-    }
-
-    public function getFollowings($id)
-    {
-        $followings = User::find($id)->followed()->get();
+        $followings = User::find($id)->following()->get();
 
         return $followings;
+    }
+
+    public function getFollowers($id)
+    {
+        $followers  = User::find($id)->followers()->get();
+
+        return $followers ;
     }
 
     public function getFollow($id)

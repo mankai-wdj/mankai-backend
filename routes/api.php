@@ -56,8 +56,8 @@ Route::get('sidebar/{id}', [ChatController::class, 'sidebarData']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('followings/{user_id}', [FollowController::class, 'getFollowings']);
-Route::get('follows/{id}', [FollowController::class, 'getFollows']);
+// Route::get('followings/{user_id}', [FollowController::class, 'getFollowings']);
+Route::get('followers/{user_id}', [FollowController::class, 'getFollows']);
 Route::get('memo/{id}', [MemoController::class, 'showMemos']);
 Route::post('user/follow', [FollowController::class, 'store'])->name('storeFollow');
 Route::get('/getuserprofile/{user_id}', [BoardController::class, 'getUser']);

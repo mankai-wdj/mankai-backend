@@ -22,6 +22,8 @@ class UserController extends Controller
             $user->save();
         } else {
             $profile = $request->image;
+            $user->profile = $profile;
+            $user->save();
         }
 
         return $profile;
