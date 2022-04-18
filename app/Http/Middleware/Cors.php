@@ -24,6 +24,8 @@ class Cors
             'http://localhost:3000', // Dev Client Server using CORS
             'http://mankai.shop',
             'https://mankai.shop',
+            'http://view.mankai.shop',
+            'https://view.mankai.shop',
             'https://api.mankai.shop',
             'http://api.mankai.shop'
             // Prod Client Server using CORS
