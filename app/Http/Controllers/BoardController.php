@@ -206,6 +206,7 @@ class BoardController extends Controller
         $client_secret = "BxA1eiUXuT"; // 나중에 가릴것 ㅋㅋ
         $encText = urlencode($text);
         $postvars = "query=" . $encText;
+        $mycountry = $request->mycountry;
 
         $url = "https://openapi.naver.com/v1/papago/detectLangs";
         $is_post = true;
@@ -229,7 +230,7 @@ class BoardController extends Controller
         }
 
 
-        $postvars = "source=" . $langCode . "&target=ja&text=" . $encText;
+        $postvars = "source=" . $langCode . "&target=" . $mycountry . "&text=" . $encText;
         $url = "https://openapi.naver.com/v1/papago/n2mt";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
