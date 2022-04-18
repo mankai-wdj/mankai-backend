@@ -24,20 +24,18 @@ class User extends Authenticatable
         'password',
     ];
 
-    protected static function boot() {
+    protected static function boot()
+    {
 
         parent::boot();
 
         static::created(function ($user) {
             $officials = User::where('position', 'official')->get();
-            for($i = 0; $i < count($officials); $i++){
+            for ($i = 0; $i < count($officials); $i++) {
                 $user->following()->toggle($officials[$i]);
             }
-
         });
     }
-    // protected $with = ['myMemos'];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -56,17 +54,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function messages() {
+
+
+
+    public function messages()
+    {
         return $this->hasMany(Message::class);
     }
 
-    public function myRooms() {
+    public function myRooms()
+    {
         return $this->belongsToMany(Room::class);
     }
 
-    public function followers() {
+    public function followers()
+    {
         return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');
-      }
+    }
 
     public function myMemos()
     {
@@ -76,10 +80,5 @@ class User extends Authenticatable
     public function following()
     {
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followed_id');
-    }
-
-    public function followed()
-    {
-        return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');
     }
 }

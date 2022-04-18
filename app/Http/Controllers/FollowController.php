@@ -11,9 +11,7 @@ class FollowController extends Controller
     public function store(Request $request)
     {
         $user = User::find($request->user_id);
-        // 얘가 follower
         $to_user = User::find($request->to_user_id);
-        // 얘가 나.
 
         $user->following()->toggle($to_user);
         return $user;
@@ -22,15 +20,27 @@ class FollowController extends Controller
     public function getFollows($id)
     {
         $followings = User::find($id)->following()->get();
+<<<<<<< HEAD
+=======
+        // followings로 바꾸기
+>>>>>>> master
 
         return $followings;
     }
 
     public function getFollowers($id)
+<<<<<<< HEAD
     {
         $followers  = User::find($id)->followers()->get();
 
         return $followers ;
+=======
+
+    {
+        $followers = User::find($id)->followers()->get();
+
+        return $followers;
+>>>>>>> master
     }
 
     public function getFollow($id)
@@ -39,5 +49,4 @@ class FollowController extends Controller
 
         return $name;
     }
-
 }
