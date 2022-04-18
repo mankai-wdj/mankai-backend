@@ -40,7 +40,7 @@ return [
                 'encrypted' => true,
                 'host' => "api.mankai.shop",
                 'port' => 6001,
-                'scheme' => "http",
+                'scheme' => "https",
                 'useTLS' => true,
                 'curl_options' => [
                     CURLOPT_SSL_VERIFYHOST => 0,
