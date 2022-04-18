@@ -108,7 +108,7 @@ class GroupController extends Controller
         $groups = DB::table('group_boards')
             ->where([["group_id", "=", $group_id], ["category", "=", $request->category]])
             ->join("users", "users.id", "=", "group_boards.user_id")
-            ->select("group_boards.*", 'users.name')
+            ->select("group_boards.*", 'users.name','users.profile')
             ->latest()
             ->paginate(5);
 
