@@ -124,7 +124,7 @@ Route::get('/get/board/{user_id}', [MemoController::class, 'GetMyBoard']);
 Route::get('/show/memos/{memo_id}', [MemoController::class, 'editMemoView']);
 //내 메모 수정 할때 수정 페이지에 기존 내용을 표시해주는 것
 Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
-
+Route::post('video/filesave', [VideoController::class, 'videoChatFileSave']);
 
 // 그룹
 
