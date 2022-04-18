@@ -99,14 +99,14 @@ class BoardController extends Controller
         if ($category == "전체") {
             $boards = DB::table("free_boards")
                 ->join('users', 'free_boards.user_id', "=", 'users.id')
-                ->select('free_boards.*', 'users.name')
+                ->select('free_boards.*', 'users.name','users.profile')
                 ->latest()
                 ->paginate(5);
         } else {
             $boards = DB::table("free_boards")
                 ->where("category", "=", $category)
                 ->join('users', 'free_boards.user_id', "=", 'users.id')
-                ->select('free_boards.*', 'users.name')
+                ->select('free_boards.*', 'users.name','users.profile')
                 ->latest()
                 ->paginate(5);
         }
