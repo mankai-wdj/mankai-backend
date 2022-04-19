@@ -12,6 +12,7 @@ use App\Http\Controllers\MymemoController;
 use App\Http\Controllers\ChatController;
 
 use App\Http\Controllers\TranslationController;
+use App\Http\Controllers\VideoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
