@@ -99,14 +99,14 @@ class BoardController extends Controller
         if ($category == "전체") {
             $boards = DB::table("free_boards")
                 ->join('users', 'free_boards.user_id', "=", 'users.id')
-                ->select('free_boards.*', 'users.name')
+                ->select('free_boards.*', 'users.name','users.profile')
                 ->latest()
                 ->paginate(5);
         } else {
             $boards = DB::table("free_boards")
                 ->where("category", "=", $category)
                 ->join('users', 'free_boards.user_id', "=", 'users.id')
-                ->select('free_boards.*', 'users.name')
+                ->select('free_boards.*', 'users.name','users.profile')
                 ->latest()
                 ->paginate(5);
         }
@@ -206,6 +206,7 @@ class BoardController extends Controller
         $client_secret = "BxA1eiUXuT"; // 나중에 가릴것 ㅋㅋ
         $encText = urlencode($text);
         $postvars = "query=" . $encText;
+        $mycountry = $request->mycountry;
 
         $url = "https://openapi.naver.com/v1/papago/detectLangs";
         $is_post = true;
@@ -229,7 +230,7 @@ class BoardController extends Controller
         }
 
 
-        $postvars = "source=" . $langCode . "&target=ja&text=" . $encText;
+        $postvars = "source=" . $langCode . "&target=" . $mycountry . "&text=" . $encText;
         $url = "https://openapi.naver.com/v1/papago/n2mt";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
