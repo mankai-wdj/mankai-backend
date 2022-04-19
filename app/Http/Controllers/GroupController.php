@@ -92,7 +92,7 @@ class GroupController extends Controller
         Log::info($search);
         if ($search == "NULLDATA") {
             Log::info("검색 안했을 때 케이스");
-            $groups = Group::all();
+            $groups = Group::all()->latest();
         } else
             $groups = DB::table("groups")->where("name", "like", "%" . $search . "%")->get();
 
