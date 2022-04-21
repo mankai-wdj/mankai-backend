@@ -82,6 +82,7 @@ Route::post('/translate/text', [TranslationController::class, 'translation']);  
 
 Route::get('room/find/{id}', [ChatController::class, 'getChatRoomById']); // room id로 찾기
 
+Route::get("userInfo",[UserController::class,'getUser']);
 // Board Controller
 Route::post('updatepost', [BoardController::class, "BoardUpdate"]);
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
