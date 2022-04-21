@@ -35,10 +35,20 @@ class UserController extends Controller
     {
         if(Auth::check()) {
             $user = Auth::user();
-            return $user;
+            $res = response()-> json([
+                'status' => 200,
+                'user' => $user,
+            ]);
+    
+            return $res;
         } else {
             $user = null;
-            return 'not logged';
+            $res = response()-> json([
+                'status' => 401,
+                'user' => $user,
+            ]);
+    
+            return $res;
         }
 
 
