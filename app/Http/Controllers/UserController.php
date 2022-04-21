@@ -33,7 +33,14 @@ class UserController extends Controller
 
     public function getUser()
     {
-        $user = Auth::user();
-        return $user;
+        if(Auth::check()) {
+            $user = Auth::user();
+            return $user;
+        } else {
+            $user = null;
+            return 'not logged';
+        }
+
+
     }
 }
