@@ -92,7 +92,7 @@ class GroupController extends Controller
         Log::info($search);
         if ($search == "NULLDATA") {
             Log::info("검색 안했을 때 케이스");
-            $groups = Group::all();
+            $groups = DB::table("groups")->latest()->get();
         } else
             $groups = DB::table("groups")->where("name", "like", "%" . $search . "%")->get();
 
@@ -159,7 +159,7 @@ class GroupController extends Controller
         $comments = DB::table("group_comments")
             ->where('group_board_id', '=', $group_id)
             ->join('users', 'group_comments.user_id', '=', 'users.id')
-            ->select('group_comments.*', 'users.name')
+            ->select('group_comments.*', 'users.name','users.name')
             ->latest()
             ->paginate(5);
         return $comments;

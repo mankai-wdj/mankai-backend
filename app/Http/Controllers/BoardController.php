@@ -124,7 +124,7 @@ class BoardController extends Controller
         $comments = DB::table("comments")
             ->where('freeboard_id', '=', $board_id)
             ->join('users', 'comments.user_id', '=', 'users.id')
-            ->select('comments.*', 'users.name')
+            ->select('comments.*', 'users.name','users.profile')
             ->latest()
             ->paginate(5);
         return $comments;
@@ -229,23 +229,24 @@ class BoardController extends Controller
             return $response;
         }
 
-
-        $postvars = "source=" . $langCode . "&target=" . $mycountry . "&text=" . $encText;
-        $url = "https://openapi.naver.com/v1/papago/n2mt";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, $is_post);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
-        $headers = array();
-        $headers[] = "X-Naver-Client-Id: " . $client_id;
-        $headers[] = "X-Naver-Client-Secret: " . $client_secret;
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        $response = curl_exec($ch);
-        $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        return $response;
+        if($langCode != $mycountry)
+        {
+            $postvars = "source=" . $langCode . "&target=" . $mycountry . "&text=" . $encText;
+            $url = "https://openapi.naver.com/v1/papago/n2mt";
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, $is_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
+            $headers = array();
+            $headers[] = "X-Naver-Client-Id: " . $client_id;
+            $headers[] = "X-Naver-Client-Secret: " . $client_secret;
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $response = curl_exec($ch);
+            $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            return $response;
+        }
     }
 
     public function BoardUpdate(Request $request)

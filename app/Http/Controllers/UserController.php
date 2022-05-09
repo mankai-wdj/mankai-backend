@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,5 +29,28 @@ class UserController extends Controller
         }
 
         return $profile;
+    }
+
+    public function getUser()
+    {
+        if(Auth::check()) {
+            $user = Auth::user();
+            $res = response()-> json([
+                'status' => 200,
+                'user' => $user,
+            ]);
+    
+            return $res;
+        } else {
+            $user = null;
+            $res = response()-> json([
+                'status' => 401,
+                'user' => $user,
+            ]);
+    
+            return $res;
+        }
+
+
     }
 }
