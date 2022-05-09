@@ -342,7 +342,7 @@ class ChatController extends Controller
     public function createRoom(Request $request)
     {  //room create
 
-        return gettype($request->users);
+        return $request->users;
         $users =  $request->users;
         $type = '';
         if (count($users) === 2) {
