@@ -129,6 +129,7 @@ Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
 Route::post('video/filesave', [VideoController::class, 'videoChatFileSave']);
 
 Route::get('/boardmemo/{memo_id}', [MemoController::class, 'showBoardMemo']);
+Route::get('/boardmemoedit/{memo_id}', [MemoController::class, 'editBoardMemo']);
 
 // 그룹
 

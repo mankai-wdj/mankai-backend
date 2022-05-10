@@ -152,4 +152,10 @@ class MemoController extends Controller
         $memo = AllMemo::find($memo_id);
         return $memo;
     }
+
+    public function editBoardMemo($memo_id)
+    {
+        $memo = AllMemo::find($memo_id);
+        return $memo;
+    }
 }
