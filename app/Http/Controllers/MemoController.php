@@ -146,4 +146,16 @@ class MemoController extends Controller
         $images = MemoImage::where('memo_id', $memo_id)->get();
         return $images;
     }
+
+    public function showBoardMemo($memo_id)
+    {
+        $memo = AllMemo::find($memo_id);
+        return $memo;
+    }
+
+    public function editBoardMemo($memo_id)
+    {
+        $memo = AllMemo::find($memo_id);
+        return $memo;
+    }
 }

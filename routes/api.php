@@ -82,7 +82,7 @@ Route::post('/translate/text', [TranslationController::class, 'translation']);  
 
 Route::get('room/find/{id}', [ChatController::class, 'getChatRoomById']); // room id로 찾기
 
-Route::get("userInfo",[UserController::class,'getUser']);
+Route::get("userInfo", [UserController::class, 'getUser']);
 // Board Controller
 Route::post('updatepost', [BoardController::class, "BoardUpdate"]);
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
@@ -127,6 +127,9 @@ Route::get('/show/memos/{memo_id}', [MemoController::class, 'editMemoView']);
 //내 메모 수정 할때 수정 페이지에 기존 내용을 표시해주는 것
 Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
 Route::post('video/filesave', [VideoController::class, 'videoChatFileSave']);
+
+Route::get('/boardmemo/{memo_id}', [MemoController::class, 'showBoardMemo']);
+Route::get('/boardmemoedit/{memo_id}', [MemoController::class, 'editBoardMemo']);
 
 // 그룹
 
