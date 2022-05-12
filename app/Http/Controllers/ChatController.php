@@ -96,7 +96,7 @@ class ChatController extends Controller
             $request->message = $request->name." : ".$data->message->result->translatedText;
         } else {
             $data = json_decode($response);
-            $request->message = $request->name." : ".$data->message->result->translatedText;
+            $request->message = $request->name." : ".$request->message;
         }
         return $this->sendMessage($request);
     }
