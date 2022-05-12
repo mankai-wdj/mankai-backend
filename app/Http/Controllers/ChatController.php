@@ -95,8 +95,8 @@ class ChatController extends Controller
             $data = json_decode($response);
             $request->message = $request->name." : ".$data->message->result->translatedText;
         } else {
-            //   echo "Error 내용:".$response;
-            // return $request->text;
+            $data = json_decode($response);
+            $request->message = $request->name." : ".$data->message->result->translatedText;
         }
         return $this->sendMessage($request);
     }
