@@ -93,7 +93,7 @@ class ChatController extends Controller
         if ($status_code == 200) {
             //   echo $response;
             $data = json_decode($response);
-            $request->message = $data->message->result->translatedText;
+            $request->message = $request->name." : ".$data->message->result->translatedText;
         } else {
             //   echo "Error 내용:".$response;
             // return $request->text;
