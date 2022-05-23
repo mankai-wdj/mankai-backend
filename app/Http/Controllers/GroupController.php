@@ -167,7 +167,7 @@ class GroupController extends Controller
         $comments = DB::table("group_comments")
             ->where('group_board_id', '=', $group_id)
             ->join('users', 'group_comments.user_id', '=', 'users.id')
-            ->select('group_comments.*', 'users.name','users.name')
+            ->select('group_comments.*', 'users.name','users.profile')
             ->latest()
             ->paginate(5);
         return $comments;
