@@ -93,10 +93,10 @@ class ChatController extends Controller
         if ($status_code == 200) {
             //   echo $response;
             $data = json_decode($response);
-            $request->message = $data->message->result->translatedText;
+            $request->message = $request->name." : ".$data->message->result->translatedText;
         } else {
-            //   echo "Error 내용:".$response;
-            // return $request->text;
+            $data = json_decode($response);
+            $request->message = $request->name." : ".$request->message;
         }
         return $this->sendMessage($request);
     }
@@ -212,7 +212,7 @@ class ChatController extends Controller
                     }
                 }
 
-                return 'memo send complate';
+                return $message;
             } else if ($request->type == 'group') {
                 $message = $user->messages()->create([
                     'room_id' => $request->room_id,

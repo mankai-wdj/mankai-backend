@@ -103,6 +103,14 @@ class GroupController extends Controller
         }
         return $groups;
     }
+
+    public function ShowGroupNoticeWeb($notice_id){
+        $notice = DB::table("group_notices")
+                ->where("id","=",$notice_id)
+                ->get();
+
+        return $notice;
+    }
     public function ShowGroupBoard(Request $request, $group_id)
     {
         $groups = DB::table('group_boards')
@@ -159,7 +167,7 @@ class GroupController extends Controller
         $comments = DB::table("group_comments")
             ->where('group_board_id', '=', $group_id)
             ->join('users', 'group_comments.user_id', '=', 'users.id')
-            ->select('group_comments.*', 'users.name','users.name')
+            ->select('group_comments.*', 'users.name','users.profile')
             ->latest()
             ->paginate(5);
         return $comments;

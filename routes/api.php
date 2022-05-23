@@ -82,7 +82,6 @@ Route::post('/translate/text', [TranslationController::class, 'translation']);  
 
 Route::get('room/find/{id}', [ChatController::class, 'getChatRoomById']); // room id로 찾기
 
-Route::get("userInfo", [UserController::class, 'getUser']);
 // Board Controller
 Route::post('updatepost', [BoardController::class, "BoardUpdate"]);
 Route::post('/board/show/{category}', [BoardController::class, "BoardShow"]);
@@ -128,9 +127,6 @@ Route::get('/show/memos/{memo_id}', [MemoController::class, 'editMemoView']);
 Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
 Route::post('video/filesave', [VideoController::class, 'videoChatFileSave']);
 
-Route::get('/boardmemo/{memo_id}', [MemoController::class, 'showBoardMemo']);
-Route::get('/boardmemoedit/{memo_id}', [MemoController::class, 'editBoardMemo']);
-
 // 그룹
 
 
@@ -141,7 +137,7 @@ Route::get('/show/groupdata/{group_id}', [GroupController::class, 'ShowGroupData
 Route::get('/show/groupcomment/{group_id}', [GroupController::class, 'ShowGroupComment']);
 Route::get('/show/grouplike/{board_id}', [GroupController::class, 'ShowGroupLike']);
 Route::get('/show/groupuser/{board_id}', [GroupController::class, 'ShowGroupUser']);
-
+Route::get('/show/groupnoticeweb/{notice_id}', [GroupController::class, 'ShowGroupNoticeWeb']);
 Route::post('/update/category', [GroupController::class, 'UpdateGroupCategory']);
 Route::post('/delete/groupcategory', [GroupController::class, 'DeleteGroupCategory']);
 Route::post('/show/groupnotice', [GroupController::class, 'ShowGroupNotice']);
