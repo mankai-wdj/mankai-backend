@@ -212,7 +212,7 @@ class ChatController extends Controller
                     }
                 }
 
-                return 'memo send complate';
+                return $message;
             } else if ($request->type == 'group') {
                 $message = $user->messages()->create([
                     'room_id' => $request->room_id,
