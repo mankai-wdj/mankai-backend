@@ -134,7 +134,7 @@ Route::get('/show/mygroup/{user_id}', [GroupController::class, 'ShowMyGroup']);
 Route::get('/show/detail_group/{group_id}', [GroupController::class, 'ShowGroupDetail']);
 Route::get('/show/group/{search}', [GroupController::class, 'ShowGroup']);
 Route::get('/show/groupdata/{group_id}', [GroupController::class, 'ShowGroupData']);
-Route::post('/show/groupcomment/{group_id}', [GroupController::class, 'ShowGroupComment']);
+Route::get('/show/groupcomment/{group_id}', [GroupController::class, 'ShowGroupComment']);
 Route::get('/show/grouplike/{board_id}', [GroupController::class, 'ShowGroupLike']);
 Route::get('/show/groupuser/{board_id}', [GroupController::class, 'ShowGroupUser']);
 Route::get('/show/groupnoticeweb/{notice_id}', [GroupController::class, 'ShowGroupNoticeWeb']);
