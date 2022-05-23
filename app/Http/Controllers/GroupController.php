@@ -103,6 +103,14 @@ class GroupController extends Controller
         }
         return $groups;
     }
+
+    public function ShowGroupNoticeWeb($notice_id){
+        $notice = DB::table("group_notices")
+                ->where("id","=",$notice_id)
+                ->get();
+
+        return $notice;
+    }
     public function ShowGroupBoard(Request $request, $group_id)
     {
         $groups = DB::table('group_boards')
