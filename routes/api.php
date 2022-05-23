@@ -137,9 +137,9 @@ Route::get('/show/groupdata/{group_id}', [GroupController::class, 'ShowGroupData
 Route::get('/show/groupcomment/{group_id}', [GroupController::class, 'ShowGroupComment']);
 Route::get('/show/grouplike/{board_id}', [GroupController::class, 'ShowGroupLike']);
 Route::get('/show/groupuser/{board_id}', [GroupController::class, 'ShowGroupUser']);
+Route::get('/show/groupnoticeweb/{notice_id}', [GroupController::class, 'ShowGroupNoticeWeb']);
 Route::post('/update/category', [GroupController::class, 'UpdateGroupCategory']);
 Route::post('/delete/groupcategory', [GroupController::class, 'DeleteGroupCategory']);
-Route::post('/show/groupnoticeweb/{notice_id}', [GroupController::class, 'ShowGroupNoticeWeb']);
 Route::post('/show/groupnotice', [GroupController::class, 'ShowGroupNotice']);
 Route::post('/post/groupnotice', [GroupController::class, 'PostGroupNotice']);
 Route::post('/show/groupboard/{group_id}', [GroupController::class, 'ShowGroupBoard']);
