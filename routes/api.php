@@ -112,6 +112,8 @@ Route::post('storememo/', [MemoController::class, "storePostMemo"]);
 Route::post('deletememos/{post_id}', [MemoController::class, 'deletePostMemos']);
 
 Route::post('updatememo', [MemoController::class, 'updateMemo']);
+Route::get('boardmemoedit/{memo_id}', [MemoController::class, 'editBoardMemo']);
+Route::get('boardmemo/{memo_id}', [MemoController::class, 'showBoardMemo']);
 
 // MyPage-YouUser
 Route::get('follow/{follow_id}', [FollowController::class, 'getFollow']);
@@ -119,6 +121,8 @@ Route::get('follow/{follow_id}', [FollowController::class, 'getFollow']);
 Route::post('profile', [UserController::class, 'update']);
 Route::get('getmemoimages/{memo_id}', [MemoController::class, 'getMemoImages']);
 Route::post('/post/memo', [MemoController::class, "PostMemo"]);
+
+
 //내 메모 수정*(Update)
 Route::get('/show/memo/{user_id}', [MemoController::class, 'ShowMemo']);
 Route::get('/get/board/{user_id}', [MemoController::class, 'GetMyBoard']);
