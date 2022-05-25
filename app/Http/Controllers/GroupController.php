@@ -121,7 +121,7 @@ class GroupController extends Controller
 
         $user = DB::table("users")
             ->where("id","=",$notice)
-            ->select("name","profile")
+            ->select("name","profile","id")
             ->get();
 
         return $user;
