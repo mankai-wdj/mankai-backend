@@ -126,7 +126,7 @@ class BoardController extends Controller
         $comments = DB::table("comments")
             ->where('freeboard_id', '=', $board_id)
             ->join('users', 'comments.user_id', '=', 'users.id')
-            ->select('comments.*', 'users.name','users.profile')
+            ->select('comments.*', 'users.name','users.profile','users.id')
             ->latest()
             ->paginate(5);
         return $comments;
