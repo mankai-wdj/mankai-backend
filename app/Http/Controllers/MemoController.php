@@ -12,8 +12,10 @@ use Illuminate\Support\Facades\Storage;
 
 class MemoController extends Controller
 {
+
     public function storePostMemo(Request $request)
     {
+        // 모든 메모가 all_memos에 공통으로 저장하는 내용
         $memo = new AllMemo();
         $memo->memo_title = $request->memo_title;
         $memo->user_id = $request->user_id;
@@ -21,8 +23,8 @@ class MemoController extends Controller
         $memo->type = $request->memo_type;
 
         $memo->save();
-        // 모든 메모가 all_memos에 공통으로 저장하는 내용
 
+        // BoardType게시글 저장할 때
         if ($request->groupboard_memo_id != null) {
             $groupBoardImages = DB::table('group_board_images')
                 ->where('group_board_id', $request->groupboard_memo_id)
@@ -37,7 +39,7 @@ class MemoController extends Controller
         }
 
 
-
+        // SNSType게시글 저장할 때
         if ($request->post_memo_id != null) {
             $images = DB::table('free_board_images')
                 ->where('free_boards_id', $request->post_memo_id)
@@ -52,7 +54,6 @@ class MemoController extends Controller
                 $memoImages->save();
             }
         }
-        // post에서 메모보내기시에 딸린 이미지 가져오고(free_board_images로부터) memo_images에 저장하기
 
         if ($request->hasFile("images0")) {
             $i = 0;
@@ -70,7 +71,6 @@ class MemoController extends Controller
                 $j++;
             }
         }
-        // mymemo에서 메모생성시의 이미지들을 memo_images에 저장한다. 이게 되어야 한다.
 
 
         return $memo;
@@ -94,11 +94,17 @@ class MemoController extends Controller
                 'memo_title' => $request->memo_title
             ]);
 
-        $images = MemoImage::where('memo_id', $request->memo_id);
-        $images->delete();
+        if (gettype($request->memo_id) == "string") {
+            $images = MemoImage::where("memo_id", intval($request->memo_id));
+            $images->delete();
+        } else {
+            $images = MemoImage::where('memo_id', $request->memo_id);
+            $images->delete();
+        }
 
 
         $url_images = explode(',', $request->url_images);
+        Log::info($url_images);
         if (strlen($url_images[0]) >= 1) {
             for ($i = 0; $i < count($url_images); $i++) {
                 $url_image = new MemoImage();

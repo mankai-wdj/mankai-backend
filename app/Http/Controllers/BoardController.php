@@ -23,6 +23,8 @@ class BoardController extends Controller
     public function showMyPosts($user_id)
     {
         $boards_post = DB::table("free_boards")
+        ->join('users', 'free_boards.user_id', "=", 'users.id')
+        ->select('free_boards.*', 'users.name','users.profile')
             ->where('free_boards.user_id', $user_id)
             ->latest()
             ->paginate(5);
