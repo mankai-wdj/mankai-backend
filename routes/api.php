@@ -128,8 +128,7 @@ Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
 Route::post('video/filesave', [VideoController::class, 'videoChatFileSave']);
 
 // 그룹
-
-
+Route::get('/show/groupnoticeweb/user/{board_id}', [GroupController::class, 'GroupNoticeWebUser']);
 Route::get('/show/mygroup/{user_id}', [GroupController::class, 'ShowMyGroup']);
 Route::get('/show/detail_group/{group_id}', [GroupController::class, 'ShowGroupDetail']);
 Route::get('/show/group/{search}', [GroupController::class, 'ShowGroup']);

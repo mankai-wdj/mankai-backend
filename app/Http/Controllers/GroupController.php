@@ -49,6 +49,16 @@ class GroupController extends Controller
             );
         $groupuser->delete();
     }
+    public function NoticeTranslate($board_id){
+        $notice = DB::table("group_notices")
+        ->where("id","=",$board_id)
+        ->get("content");
+
+
+        return $notice;
+
+
+    }
     public function DeleteDashGroupUser($groupUser_id)
     {
         // 강제로 해지 시킬때임
@@ -102,6 +112,19 @@ class GroupController extends Controller
             $groups[$i]->length = count($groupUsers);
         }
         return $groups;
+    }
+
+    public function GroupNoticeWebUser($notice_id){
+        $notice = DB::table("group_notices")
+        ->where("id","=",$notice_id)
+        ->value("user_id");
+
+        $user = DB::table("users")
+            ->where("id","=",$notice)
+            ->select("name","profile")
+            ->get();
+
+        return $user;
     }
 
     public function ShowGroupNoticeWeb($notice_id){
