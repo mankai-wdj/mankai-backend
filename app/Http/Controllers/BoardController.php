@@ -23,8 +23,8 @@ class BoardController extends Controller
     public function showMyPosts($user_id)
     {
         $boards_post = DB::table("free_boards")
-        ->join('users', 'free_boards.user_id', "=", 'users.id')
-        ->select('free_boards.*', 'users.name','users.profile')
+            ->join('users', 'free_boards.user_id', "=", 'users.id')
+            ->select('free_boards.*', 'users.name', 'users.profile')
             ->where('free_boards.user_id', $user_id)
             ->latest()
             ->paginate(5);
@@ -101,14 +101,14 @@ class BoardController extends Controller
         if ($category == "전체") {
             $boards = DB::table("free_boards")
                 ->join('users', 'free_boards.user_id', "=", 'users.id')
-                ->select('free_boards.*', 'users.name','users.profile')
+                ->select('free_boards.*', 'users.name', 'users.profile', 'users.country')
                 ->latest()
                 ->paginate(5);
         } else {
             $boards = DB::table("free_boards")
                 ->where("category", "=", $category)
                 ->join('users', 'free_boards.user_id', "=", 'users.id')
-                ->select('free_boards.*', 'users.name','users.profile')
+                ->select('free_boards.*', 'users.name', 'users.profile', 'users.country')
                 ->latest()
                 ->paginate(5);
         }
@@ -126,7 +126,7 @@ class BoardController extends Controller
         $comments = DB::table("comments")
             ->where('freeboard_id', '=', $board_id)
             ->join('users', 'comments.user_id', '=', 'users.id')
-            ->select('comments.*', 'users.name','users.profile','users.id')
+            ->select('comments.*', 'users.name', 'users.profile', 'users.id')
             ->latest()
             ->paginate(5);
         return $comments;
@@ -231,8 +231,7 @@ class BoardController extends Controller
             return $response;
         }
 
-        if($langCode != $mycountry)
-        {
+        if ($langCode != $mycountry) {
             $postvars = "source=" . $langCode . "&target=" . $mycountry . "&text=" . $encText;
             $url = "https://openapi.naver.com/v1/papago/n2mt";
             $ch = curl_init();
