@@ -244,7 +244,7 @@ class ChatController extends Controller
             }
             broadcast(new MessageSent($message->load('user'), $request->room_id));
             for ($i = 0; $i < count($request->to_users); $i++) {
-                $to = User::find($request->to_users[$i]["id"]);
+                $to = User::find($request->to_users[$i]);
                 $this->messageNoti(new Request(["token" => $to->fcm_token, "body" => $message->message, "user_id" => $user->id, "room_id" => $request->room_id, "type" => $room->type]));
                 broadcast(new UsersCommunication($message->load('user'), $request->to_users[$i]));
             }
