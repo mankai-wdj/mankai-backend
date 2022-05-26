@@ -200,7 +200,7 @@ class ChatController extends Controller
         } else {
             if ($request->type == 'memo') {
                 for ($i = 0; $i < count($request->memos); $i++) {
-                    $memo = ["memo_title" => $request->memos[$i]->memo_title, "id" => $request->memos[$i]->id];
+                    $memo = ["memo_title" => $request->memos[$i]["memo_title"], "id" => $request->memos[$i]["id"]];
                     $message = $user->messages()->create([
                         'room_id' => $request->room_id,
                         'message' => json_encode($memo),
