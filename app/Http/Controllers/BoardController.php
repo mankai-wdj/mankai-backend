@@ -23,6 +23,8 @@ class BoardController extends Controller
     public function showMyPosts($user_id)
     {
         $boards_post = DB::table("free_boards")
+        ->join('users', 'free_boards.user_id', "=", 'users.id')
+        ->select('free_boards.*', 'users.name','users.profile')
             ->where('free_boards.user_id', $user_id)
             ->latest()
             ->paginate(5);
@@ -124,7 +126,7 @@ class BoardController extends Controller
         $comments = DB::table("comments")
             ->where('freeboard_id', '=', $board_id)
             ->join('users', 'comments.user_id', '=', 'users.id')
-            ->select('comments.*', 'users.name','users.profile')
+            ->select('comments.*', 'users.name','users.profile','users.id')
             ->latest()
             ->paginate(5);
         return $comments;

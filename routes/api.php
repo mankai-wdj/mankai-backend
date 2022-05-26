@@ -112,6 +112,8 @@ Route::post('storememo/', [MemoController::class, "storePostMemo"]);
 Route::post('deletememos/{post_id}', [MemoController::class, 'deletePostMemos']);
 
 Route::post('updatememo', [MemoController::class, 'updateMemo']);
+Route::get('boardmemoedit/{memo_id}', [MemoController::class, 'editBoardMemo']);
+Route::get('boardmemo/{memo_id}', [MemoController::class, 'showBoardMemo']);
 
 // MyPage-YouUser
 Route::get('follow/{follow_id}', [FollowController::class, 'getFollow']);
@@ -119,6 +121,8 @@ Route::get('follow/{follow_id}', [FollowController::class, 'getFollow']);
 Route::post('profile', [UserController::class, 'update']);
 Route::get('getmemoimages/{memo_id}', [MemoController::class, 'getMemoImages']);
 Route::post('/post/memo', [MemoController::class, "PostMemo"]);
+
+
 //내 메모 수정*(Update)
 Route::get('/show/memo/{user_id}', [MemoController::class, 'ShowMemo']);
 Route::get('/get/board/{user_id}', [MemoController::class, 'GetMyBoard']);
@@ -128,8 +132,7 @@ Route::post('/deletememo', [MemoController::class, 'DeleteMymemo']);
 Route::post('video/filesave', [VideoController::class, 'videoChatFileSave']);
 
 // 그룹
-
-
+Route::get('/show/groupnoticeweb/user/{board_id}', [GroupController::class, 'GroupNoticeWebUser']);
 Route::get('/show/mygroup/{user_id}', [GroupController::class, 'ShowMyGroup']);
 Route::get('/show/detail_group/{group_id}', [GroupController::class, 'ShowGroupDetail']);
 Route::get('/show/group/{search}', [GroupController::class, 'ShowGroup']);
