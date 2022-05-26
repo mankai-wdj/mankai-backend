@@ -52,7 +52,7 @@ class NotisController extends Controller
             "notification" => [
                 "title" => $user->name,
                 "body" => $request->body,
-                "click_action" => "http://localhost:3000/chat",
+                "click_action" => "https://mankai.shop/chat",
             ],
             "data" => [
                 "type" => $request->type,

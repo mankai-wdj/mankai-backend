@@ -212,7 +212,7 @@ class ChatController extends Controller
                     }
                 }
 
-                return $message;
+                return "message success";
             } else if ($request->type == 'group') {
                 $message = $user->messages()->create([
                     'room_id' => $request->room_id,
