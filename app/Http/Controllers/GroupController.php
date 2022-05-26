@@ -49,15 +49,14 @@ class GroupController extends Controller
             );
         $groupuser->delete();
     }
-    public function NoticeTranslate($board_id){
+    public function NoticeTranslate($board_id)
+    {
         $notice = DB::table("group_notices")
-        ->where("id","=",$board_id)
-        ->get("content");
+            ->where("id", "=", $board_id)
+            ->get("content");
 
 
         return $notice;
-
-
     }
     public function DeleteDashGroupUser($groupUser_id)
     {
@@ -114,23 +113,25 @@ class GroupController extends Controller
         return $groups;
     }
 
-    public function GroupNoticeWebUser($notice_id){
+    public function GroupNoticeWebUser($notice_id)
+    {
         $notice = DB::table("group_notices")
-        ->where("id","=",$notice_id)
-        ->value("user_id");
+            ->where("id", "=", $notice_id)
+            ->value("user_id");
 
         $user = DB::table("users")
-            ->where("id","=",$notice)
-            ->select("name","profile","id")
+            ->where("id", "=", $notice)
+            ->select("name", "profile", "id")
             ->get();
 
         return $user;
     }
 
-    public function ShowGroupNoticeWeb($notice_id){
+    public function ShowGroupNoticeWeb($notice_id)
+    {
         $notice = DB::table("group_notices")
-                ->where("id","=",$notice_id)
-                ->get();
+            ->where("id", "=", $notice_id)
+            ->get();
 
         return $notice;
     }
@@ -139,7 +140,7 @@ class GroupController extends Controller
         $groups = DB::table('group_boards')
             ->where([["group_id", "=", $group_id], ["category", "=", $request->category]])
             ->join("users", "users.id", "=", "group_boards.user_id")
-            ->select("group_boards.*", 'users.name','users.profile')
+            ->select("group_boards.*", 'users.name', 'users.profile', 'users.country')
             ->latest()
             ->paginate(5);
 
@@ -190,7 +191,7 @@ class GroupController extends Controller
         $comments = DB::table("group_comments")
             ->where('group_board_id', '=', $group_id)
             ->join('users', 'group_comments.user_id', '=', 'users.id')
-            ->select('group_comments.*', 'users.name','users.profile','users.id')
+            ->select('group_comments.*', 'users.name', 'users.profile', 'users.id')
             ->latest()
             ->paginate(5);
         return $comments;
