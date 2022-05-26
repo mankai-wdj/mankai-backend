@@ -244,6 +244,8 @@ class ChatController extends Controller
             }
             broadcast(new MessageSent($message->load('user'), $request->room_id));
             for ($i = 0; $i < count($request->to_users); $i++) {
+                $to = User::find($request->to_users[$i]["id"]);
+                $this->messageNoti(new Request(["token" => $to->fcm_token, "body" => $message->message, "user_id" => $user->id, "room_id" => $request->room_id, "type" => $room->type]));
                 broadcast(new UsersCommunication($message->load('user'), $request->to_users[$i]));
             }
         }
@@ -397,5 +399,51 @@ class ChatController extends Controller
         }
 
         return $room;
+    }
+
+    public function messageNoti(Request $request) {
+        $url = 'https://fcm.googleapis.com/fcm/send';
+        // $user = User::find($request->title);
+        $room = Room::find($request->room_id);
+        $user = User::find($request->user_id);
+        $data = [
+            "to" => $request->token,
+            "notification" => [
+                "title" => $user->name,
+                "body" => $request->body,
+                "click_action" => "https://mankai.shop/chat",
+            ],
+            "data" => [
+                "type" => $request->type,
+                "user" => $user,
+                "room" => $room,
+            ]
+        ];
+        $encodedData = json_encode($data);
+
+        $headers = [
+            'Authorization:key=' . env("REACT_APP_FIREBASE_SERVER_KEY"),
+            'Content-Type: application/json',
+        ];
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        // Disabling SSL Certificate support temporarly
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $encodedData);
+        // Execute post
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+        // Close connection
+        curl_close($ch);
+
     }
 }
