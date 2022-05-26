@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Storage;
 class MemoController extends Controller
 {
 
+
+    public function getMemo($id) {
+        $memo = AllMemo::find($id);
+
+        return $memo;
+    }
     public function storePostMemo(Request $request)
     {
         // 모든 메모가 all_memos에 공통으로 저장하는 내용
