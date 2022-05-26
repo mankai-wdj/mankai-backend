@@ -169,3 +169,5 @@ Route::post('/delete/groupcomment/{comment_id}', [GroupController::class, 'Delet
 //알림
 
 Route::post('/fcm/message', [NotisController::class, 'messageNoti']);
+
+Route::post('/set/fcmToken/{id}', [NotisController::class, 'userTokenSet']);

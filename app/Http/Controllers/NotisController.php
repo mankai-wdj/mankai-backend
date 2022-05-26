@@ -42,6 +42,13 @@ class NotisController extends Controller
 
     }
 
+    public function userTokenSet(Request $request, $id) {
+        $user = User::find($id);
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+        return "fcm token set success";
+    }
+
     public function messageNoti(Request $request) {
         $url = 'https://fcm.googleapis.com/fcm/send';
         // $user = User::find($request->title);
